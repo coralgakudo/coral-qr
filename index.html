@@ -3,53 +3,462 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>コーラル学童クラブ QR受付</title>
 
   <script src="https://unpkg.com/html5-qrcode"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      text-align: center;
+      background: #f4f7fb;
+      color: #222;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: auto;
       padding: 20px;
     }
 
     h1 {
-      margin-bottom: 10px;
+      text-align: center;
+      font-size: 34px;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 22px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    button {
+      flex: 1;
+      padding: 22px;
+      border: none;
+      border-radius: 16px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #arrivalBtn {
+      background: #22c55e;
+      color: white;
+    }
+
+    #departureBtn {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    #arrivalBtn.inactive {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    #departureBtn.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    #modeText {
+      text-align: center;
+      font-size: 23px;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .cameraBox {
+      background: white;
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.08);
     }
 
     #reader {
-      max-width: 500px;
-      margin: 20px auto;
+      width: 100%;
+    }
+
+    #resultBox {
+      display: none;
+      margin-top: 18px;
+      padding: 24px;
+      border-radius: 18px;
+      text-align: center;
+    }
+
+    #resultBox.success {
+      display: block;
+      background: #dcfce7;
+      border: 3px solid #22c55e;
+    }
+
+    #resultBox.error {
+      display: block;
+      background: #fee2e2;
+      border: 3px solid #ef4444;
+    }
+
+    #mainMessage {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    #subMessage {
+      font-size: 21px;
+      margin-top: 8px;
+    }
+
+    .note {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 16px;
+      color: #666;
     }
   </style>
 </head>
 
 <body>
 
+<div class="container">
+
   <h1>コーラル学童クラブ</h1>
-  <p>QRカメラテスト</p>
 
-  <div id="reader"></div>
+  <div class="subtitle">
+    QR 登園・下校受付
+  </div>
 
-  <script>
-    const scanner = new Html5QrcodeScanner(
-      "reader",
+  <div class="buttons">
+
+    <button
+      id="arrivalBtn"
+      onclick="setMode('arrival')"
+    >
+      登園
+    </button>
+
+    <button
+      id="departureBtn"
+      onclick="setMode('departure')"
+    >
+      下校
+    </button>
+
+  </div>
+
+  <div id="modeText">
+    現在：登園モード
+  </div>
+
+  <div class="cameraBox">
+    <div id="reader"></div>
+  </div>
+
+  <div id="resultBox">
+    <div id="mainMessage"></div>
+    <div id="subMessage"></div>
+  </div>
+
+  <div class="note">
+    QRコードをカメラにかざしてください
+    <br><br>
+    同じQRコードは20分以内に再登録できません
+  </div>
+
+</div>
+
+<script>
+
+const GAS_URL =
+  'https://script.google.com/macros/s/AKfycbw4h90m1o43II_d-JCrGjTucM6bOL5u_JCW5jEltHzm5tozR1zKPnPpov-OaHFZvwRz-g/exec';
+
+let mode = 'arrival';
+let processing = false;
+let lastCode = '';
+let lastScan = 0;
+
+
+// 登園・下校切替
+function setMode(newMode) {
+
+  mode = newMode;
+
+  const arrival =
+    document.getElementById('arrivalBtn');
+
+  const departure =
+    document.getElementById('departureBtn');
+
+  const modeText =
+    document.getElementById('modeText');
+
+  if (mode === 'arrival') {
+
+    arrival.classList.remove('inactive');
+    departure.classList.remove('active');
+
+    modeText.innerText =
+      '現在：登園モード';
+
+  } else {
+
+    arrival.classList.add('inactive');
+    departure.classList.add('active');
+
+    modeText.innerText =
+      '現在：下校モード';
+  }
+}
+
+
+// QR読取
+function onScanSuccess(decodedText) {
+
+  if (processing) {
+    return;
+  }
+
+  const now = Date.now();
+
+  if (
+    decodedText === lastCode &&
+    now - lastScan < 3000
+  ) {
+    return;
+  }
+
+  lastCode = decodedText;
+  lastScan = now;
+  processing = true;
+
+  sendToAppsScript(decodedText);
+}
+
+
+// Apps Scriptへ送る
+function sendToAppsScript(qrText) {
+
+  const callbackName =
+    'coralCallback_' + Date.now();
+
+  window[callbackName] =
+    function(result) {
+
+      processing = false;
+
+      if (result && result.success) {
+
+        playSuccessSound();
+
+        showResult(
+          true,
+          result.message || '受付しました',
+          result.time || ''
+        );
+
+      } else {
+
+        playErrorSound();
+
+        showResult(
+          false,
+          result && result.message
+            ? result.message
+            : '登録できませんでした。',
+          result && result.subMessage
+            ? result.subMessage
+            : ''
+        );
+      }
+
+      try {
+        delete window[callbackName];
+      } catch (e) {}
+
+      setTimeout(
+        hideResult,
+        3500
+      );
+    };
+
+
+  const script =
+    document.createElement('script');
+
+  script.src =
+    GAS_URL +
+    '?action=scan' +
+    '&qr=' +
+    encodeURIComponent(qrText) +
+    '&mode=' +
+    encodeURIComponent(mode) +
+    '&callback=' +
+    encodeURIComponent(callbackName) +
+    '&t=' +
+    Date.now();
+
+
+  script.onerror =
+    function() {
+
+      processing = false;
+
+      playErrorSound();
+
+      showResult(
+        false,
+        '通信できませんでした',
+        'インターネット接続を確認してください。'
+      );
+    };
+
+
+  document.body.appendChild(script);
+}
+
+
+// 結果表示
+function showResult(
+  success,
+  main,
+  sub
+) {
+
+  const box =
+    document.getElementById('resultBox');
+
+  box.className =
+    success
+      ? 'success'
+      : 'error';
+
+  document
+    .getElementById('mainMessage')
+    .innerText =
+      success
+        ? '✓ ' + main
+        : main;
+
+  document
+    .getElementById('subMessage')
+    .innerText =
+      sub || '';
+}
+
+
+// 結果を消す
+function hideResult() {
+
+  const box =
+    document.getElementById('resultBox');
+
+  box.className = '';
+
+  box.style.display = 'none';
+}
+
+
+// 成功音
+function playSuccessSound() {
+  beep(880, 0.18);
+}
+
+
+// エラー音
+function playErrorSound() {
+  beep(300, 0.30);
+}
+
+
+// 音
+function beep(
+  frequency,
+  seconds
+) {
+
+  try {
+
+    const AudioContext =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    const context =
+      new AudioContext();
+
+    const oscillator =
+      context.createOscillator();
+
+    const gain =
+      context.createGain();
+
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+
+    oscillator.frequency.value =
+      frequency;
+
+    gain.gain.value = 0.15;
+
+    oscillator.start();
+
+    oscillator.stop(
+      context.currentTime +
+      seconds
+    );
+
+  } catch (e) {}
+}
+
+
+// カメラ起動
+function startCamera() {
+
+  const scanner =
+    new Html5QrcodeScanner(
+      'reader',
       {
         fps: 10,
-        qrbox: 250
+        qrbox: {
+          width: 250,
+          height: 250
+        },
+        rememberLastUsedCamera: true
       },
       false
     );
 
-    scanner.render(
-      function(decodedText) {
-        alert("読み取り成功：" + decodedText);
-      },
-      function(error) {
-      }
-    );
-  </script>
+  scanner.render(
+    onScanSuccess,
+    function() {}
+  );
+}
+
+
+// 起動
+window.addEventListener(
+  'load',
+  function() {
+
+    setMode('arrival');
+
+    startCamera();
+  }
+);
+
+</script>
 
 </body>
 </html>
