@@ -28,30 +28,33 @@
 
     h1 {
       text-align: center;
-      font-size: 34px;
+      font-size: 32px;
       margin-bottom: 5px;
     }
 
     .subtitle {
       text-align: center;
-      font-size: 22px;
-      margin-bottom: 22px;
+      font-size: 20px;
+      margin-bottom: 20px;
     }
 
     .buttons {
       display: flex;
-      gap: 14px;
-      margin-bottom: 16px;
+      gap: 12px;
+      margin-bottom: 15px;
     }
 
     button {
-      flex: 1;
-      padding: 22px;
       border: none;
-      border-radius: 16px;
-      font-size: 28px;
+      border-radius: 14px;
+      padding: 18px;
+      font-size: 22px;
       font-weight: bold;
       cursor: pointer;
+    }
+
+    .mainBtn {
+      flex: 1;
     }
 
     #arrivalBtn {
@@ -76,14 +79,14 @@
 
     #modeText {
       text-align: center;
-      font-size: 23px;
+      font-size: 21px;
       font-weight: bold;
       margin: 15px 0;
     }
 
     .cameraBox {
       background: white;
-      border-radius: 20px;
+      border-radius: 18px;
       padding: 14px;
       box-shadow: 0 3px 14px rgba(0,0,0,.08);
     }
@@ -95,8 +98,8 @@
     #resultBox {
       display: none;
       margin-top: 18px;
-      padding: 24px;
-      border-radius: 18px;
+      padding: 22px;
+      border-radius: 16px;
       text-align: center;
     }
 
@@ -113,20 +116,177 @@
     }
 
     #mainMessage {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: bold;
     }
 
     #subMessage {
-      font-size: 21px;
+      font-size: 20px;
       margin-top: 8px;
     }
 
     .note {
       text-align: center;
-      margin-top: 16px;
-      font-size: 16px;
+      margin-top: 15px;
+      font-size: 15px;
       color: #666;
+    }
+
+    .staffMenuBtn {
+      width: 100%;
+      margin-top: 22px;
+      background: #374151;
+      color: white;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.activePage {
+      display: block;
+    }
+
+    .backBtn {
+      width: 100%;
+      margin-bottom: 15px;
+      background: #e5e7eb;
+      color: #111827;
+      font-size: 18px;
+    }
+
+    .sectionTitle {
+      text-align: center;
+      font-size: 26px;
+      font-weight: bold;
+      margin: 10px 0 20px;
+    }
+
+    .choiceGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .choiceBtn {
+      width: 100%;
+      background: white;
+      border: 2px solid #d1d5db;
+      color: #111827;
+    }
+
+    .studentGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .studentBtn {
+      background: white;
+      border: 2px solid #93c5fd;
+      color: #1e3a8a;
+      padding: 16px 8px;
+      font-size: 18px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 25px;
+      font-size: 18px;
+    }
+
+    .detailCard {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.08);
+    }
+
+    .studentName {
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .summaryGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .summaryBox {
+      background: #f3f4f6;
+      border-radius: 14px;
+      padding: 18px 8px;
+      text-align: center;
+    }
+
+    .summaryNumber {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .summaryLabel {
+      margin-top: 5px;
+      font-size: 15px;
+      color: #555;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+
+    .calHead {
+      text-align: center;
+      font-weight: bold;
+      padding: 7px 0;
+    }
+
+    .calDay {
+      min-height: 58px;
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 5px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .present {
+      background: #dcfce7;
+    }
+
+    .absent {
+      background: #fee2e2;
+    }
+
+    .future {
+      background: #f3f4f6;
+      color: #aaa;
+    }
+
+    .mark {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 3px;
+    }
+
+    @media (max-width: 500px) {
+      h1 {
+        font-size: 27px;
+      }
+
+      button {
+        font-size: 20px;
+        padding: 16px 10px;
+      }
+
+      .studentGrid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   </style>
 </head>
@@ -135,88 +295,728 @@
 
 <div class="container">
 
-  <h1>コーラル学童クラブ</h1>
+  <!-- ========================= -->
+  <!-- QR受付画面 -->
+  <!-- ========================= -->
 
-  <div class="subtitle">
-    QR 登園・下校受付
-  </div>
+  <div id="qrPage" class="page activePage">
 
-  <div class="buttons">
+    <h1>コーラル学童クラブ</h1>
+
+    <div class="subtitle">
+      QR 登園・下校受付
+    </div>
+
+    <div class="buttons">
+
+      <button
+        id="arrivalBtn"
+        class="mainBtn"
+        onclick="setMode('arrival')"
+      >
+        登園
+      </button>
+
+      <button
+        id="departureBtn"
+        class="mainBtn"
+        onclick="setMode('departure')"
+      >
+        下校
+      </button>
+
+    </div>
+
+    <div id="modeText">
+      現在：登園モード
+    </div>
+
+    <div class="cameraBox">
+      <div id="reader"></div>
+    </div>
+
+    <div id="resultBox">
+      <div id="mainMessage"></div>
+      <div id="subMessage"></div>
+    </div>
+
+    <div class="note">
+      QRコードをカメラにかざしてください
+      <br><br>
+      同じQRコードは20分以内に再登録できません
+    </div>
 
     <button
-      id="arrivalBtn"
-      onclick="setMode('arrival')"
+      class="staffMenuBtn"
+      onclick="openStaffMenu()"
     >
-      登園
+      職員メニュー
     </button>
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- 学校選択 -->
+  <!-- ========================= -->
+
+  <div id="schoolPage" class="page">
 
     <button
-      id="departureBtn"
-      onclick="setMode('departure')"
+      class="backBtn"
+      onclick="showPage('qrPage')"
     >
-      下校
+      ← QR受付に戻る
     </button>
 
+    <div class="sectionTitle">
+      学校を選んでください
+    </div>
+
+    <div class="choiceGrid">
+
+      <button
+        class="choiceBtn"
+        onclick="selectSchool('読谷小学校')"
+      >
+        読谷小学校
+      </button>
+
+      <button
+        class="choiceBtn"
+        onclick="selectSchool('喜名小学校')"
+      >
+        喜名小学校
+      </button>
+
+    </div>
+
   </div>
 
-  <div id="modeText">
-    現在：登園モード
+
+  <!-- ========================= -->
+  <!-- 学年選択 -->
+  <!-- ========================= -->
+
+  <div id="gradePage" class="page">
+
+    <button
+      class="backBtn"
+      onclick="showPage('schoolPage')"
+    >
+      ← 学校選択に戻る
+    </button>
+
+    <div id="selectedSchoolTitle" class="sectionTitle">
+    </div>
+
+    <div class="choiceGrid">
+
+      <button class="choiceBtn" onclick="selectGrade(1)">
+        1年生
+      </button>
+
+      <button class="choiceBtn" onclick="selectGrade(2)">
+        2年生
+      </button>
+
+      <button class="choiceBtn" onclick="selectGrade(3)">
+        3年生
+      </button>
+
+      <button class="choiceBtn" onclick="selectGrade(4)">
+        4年生
+      </button>
+
+      <button class="choiceBtn" onclick="selectGrade(5)">
+        5年生
+      </button>
+
+      <button class="choiceBtn" onclick="selectGrade(6)">
+        6年生
+      </button>
+
+    </div>
+
   </div>
 
-  <div class="cameraBox">
-    <div id="reader"></div>
+
+  <!-- ========================= -->
+  <!-- 児童一覧 -->
+  <!-- ========================= -->
+
+  <div id="studentPage" class="page">
+
+    <button
+      class="backBtn"
+      onclick="showPage('gradePage')"
+    >
+      ← 学年選択に戻る
+    </button>
+
+    <div id="studentTitle" class="sectionTitle">
+    </div>
+
+    <div id="studentList" class="studentGrid">
+    </div>
+
+    <div id="studentLoading" class="loading">
+    </div>
+
   </div>
 
-  <div id="resultBox">
-    <div id="mainMessage"></div>
-    <div id="subMessage"></div>
-  </div>
 
-  <div class="note">
-    QRコードをカメラにかざしてください
-    <br><br>
-    同じQRコードは20分以内に再登録できません
+  <!-- ========================= -->
+  <!-- 児童詳細 -->
+  <!-- ========================= -->
+
+  <div id="detailPage" class="page">
+
+    <button
+      class="backBtn"
+      onclick="showPage('studentPage')"
+    >
+      ← 児童一覧に戻る
+    </button>
+
+    <div class="detailCard">
+
+      <div id="detailName" class="studentName">
+      </div>
+
+      <div class="summaryGrid">
+
+        <div class="summaryBox">
+          <div id="useDays" class="summaryNumber">-</div>
+          <div class="summaryLabel">
+            今月の利用日数
+          </div>
+        </div>
+
+        <div class="summaryBox">
+          <div id="absenceDays" class="summaryNumber">-</div>
+          <div class="summaryLabel">
+            今月の欠席日数
+          </div>
+        </div>
+
+      </div>
+
+      <div id="calendar" class="calendar">
+      </div>
+
+    </div>
+
   </div>
 
 </div>
+
 
 <script>
 
 const GAS_URL =
   'https://script.google.com/macros/s/AKfycbw4h90m1o43II_d-JCrGjTucM6bOL5u_JCW5jEltHzm5tozR1zKPnPpov-OaHFZvwRz-g/exec';
 
+
 let mode = 'arrival';
+
 let processing = false;
+
 let lastCode = '';
+
 let lastScan = 0;
 
+let selectedSchool = '';
 
+let selectedGrade = '';
+
+
+// ================================
+// ページ切替
+// ================================
+
+function showPage(pageId) {
+
+  document
+    .querySelectorAll('.page')
+    .forEach(function(page) {
+      page.classList.remove('activePage');
+    });
+
+  document
+    .getElementById(pageId)
+    .classList.add('activePage');
+}
+
+
+// ================================
+// 職員メニュー
+// ================================
+
+function openStaffMenu() {
+
+  showPage('schoolPage');
+}
+
+
+// ================================
+// 学校選択
+// ================================
+
+function selectSchool(school) {
+
+  selectedSchool = school;
+
+  document
+    .getElementById('selectedSchoolTitle')
+    .innerText =
+      school + '：学年を選択';
+
+  showPage('gradePage');
+}
+
+
+// ================================
+// 学年選択
+// ================================
+
+function selectGrade(grade) {
+
+  selectedGrade = grade;
+
+  document
+    .getElementById('studentTitle')
+    .innerText =
+      selectedSchool +
+      ' ' +
+      grade +
+      '年生';
+
+  showPage('studentPage');
+
+  loadStudents();
+}
+
+
+// ================================
+// 児童一覧取得
+// ================================
+
+function loadStudents() {
+
+  const list =
+    document.getElementById('studentList');
+
+  const loading =
+    document.getElementById('studentLoading');
+
+  list.innerHTML = '';
+
+  loading.innerText =
+    '児童一覧を読み込んでいます...';
+
+
+  jsonpRequest(
+    {
+      action: 'students',
+      school: selectedSchool,
+      grade: selectedGrade
+    },
+
+    function(result) {
+
+      loading.innerText = '';
+
+      if (
+        !result ||
+        !result.success
+      ) {
+
+        loading.innerText =
+          result && result.message
+            ? result.message
+            : '児童一覧を取得できませんでした。';
+
+        return;
+      }
+
+
+      if (
+        !result.students ||
+        result.students.length === 0
+      ) {
+
+        loading.innerText =
+          'この学年の児童はいません。';
+
+        return;
+      }
+
+
+      result.students.forEach(
+        function(student) {
+
+          const button =
+            document.createElement('button');
+
+          button.className =
+            'studentBtn';
+
+          button.innerText =
+            student.name;
+
+          button.onclick =
+            function() {
+
+              openStudentDetail(
+                student.id,
+                student.name
+              );
+            };
+
+          list.appendChild(button);
+        }
+      );
+    }
+  );
+}
+
+
+// ================================
+// 児童詳細
+// ================================
+
+function openStudentDetail(
+  studentId,
+  studentName
+) {
+
+  showPage('detailPage');
+
+  document
+    .getElementById('detailName')
+    .innerText =
+      studentName;
+
+  document
+    .getElementById('useDays')
+    .innerText =
+      '-';
+
+  document
+    .getElementById('absenceDays')
+    .innerText =
+      '-';
+
+  document
+    .getElementById('calendar')
+    .innerHTML =
+      '<div class="loading">読み込み中...</div>';
+
+
+  jsonpRequest(
+    {
+      action: 'studentMonth',
+      studentId: studentId
+    },
+
+    function(result) {
+
+      if (
+        !result ||
+        !result.success
+      ) {
+
+        document
+          .getElementById('calendar')
+          .innerHTML =
+            '<div class="loading">データを取得できませんでした。</div>';
+
+        return;
+      }
+
+
+      document
+        .getElementById('useDays')
+        .innerText =
+          result.useDays || 0;
+
+
+      document
+        .getElementById('absenceDays')
+        .innerText =
+          result.absenceDays || 0;
+
+
+      drawCalendar(
+        result.year,
+        result.month,
+        result.days || []
+      );
+    }
+  );
+}
+
+
+// ================================
+// カレンダー表示
+// ================================
+
+function drawCalendar(
+  year,
+  month,
+  days
+) {
+
+  const calendar =
+    document.getElementById('calendar');
+
+  calendar.innerHTML = '';
+
+
+  [
+    '日',
+    '月',
+    '火',
+    '水',
+    '木',
+    '金',
+    '土'
+  ].forEach(
+    function(dayName) {
+
+      const head =
+        document.createElement('div');
+
+      head.className =
+        'calHead';
+
+      head.innerText =
+        dayName;
+
+      calendar.appendChild(head);
+    }
+  );
+
+
+  const firstDay =
+    new Date(
+      year,
+      month - 1,
+      1
+    ).getDay();
+
+
+  for (
+    let i = 0;
+    i < firstDay;
+    i++
+  ) {
+
+    const blank =
+      document.createElement('div');
+
+    calendar.appendChild(blank);
+  }
+
+
+  days.forEach(
+    function(dayData) {
+
+      const box =
+        document.createElement('div');
+
+      box.className =
+        'calDay';
+
+
+      if (
+        dayData.status === 'present'
+      ) {
+
+        box.classList.add('present');
+
+      } else if (
+        dayData.status === 'absent'
+      ) {
+
+        box.classList.add('absent');
+
+      } else if (
+        dayData.status === 'future'
+      ) {
+
+        box.classList.add('future');
+      }
+
+
+      let mark = '';
+
+      if (
+        dayData.status === 'present'
+      ) {
+        mark = '○';
+      }
+
+      if (
+        dayData.status === 'absent'
+      ) {
+        mark = '×';
+      }
+
+
+      box.innerHTML =
+        '<div>' +
+        dayData.day +
+        '</div>' +
+        '<div class="mark">' +
+        mark +
+        '</div>';
+
+
+      calendar.appendChild(box);
+    }
+  );
+}
+
+
+// ================================
+// JSONP通信
+// ================================
+
+function jsonpRequest(
+  params,
+  callback
+) {
+
+  const callbackName =
+    'coral_' +
+    Date.now() +
+    '_' +
+    Math.floor(
+      Math.random() * 100000
+    );
+
+
+  window[callbackName] =
+    function(result) {
+
+      callback(result);
+
+      try {
+        delete window[callbackName];
+      } catch (e) {}
+
+      if (
+        script &&
+        script.parentNode
+      ) {
+        script.parentNode.removeChild(script);
+      }
+    };
+
+
+  const query =
+    Object.keys(params)
+      .map(
+        function(key) {
+          return (
+            encodeURIComponent(key) +
+            '=' +
+            encodeURIComponent(
+              params[key]
+            )
+          );
+        }
+      )
+      .join('&');
+
+
+  const script =
+    document.createElement('script');
+
+
+  script.src =
+    GAS_URL +
+    '?' +
+    query +
+    '&callback=' +
+    encodeURIComponent(
+      callbackName
+    ) +
+    '&t=' +
+    Date.now();
+
+
+  script.onerror =
+    function() {
+
+      callback({
+        success: false,
+        message:
+          '通信できませんでした。'
+      });
+
+      try {
+        delete window[callbackName];
+      } catch (e) {}
+    };
+
+
+  document.body.appendChild(
+    script
+  );
+}
+
+
+// ================================
 // 登園・下校切替
+// ================================
+
 function setMode(newMode) {
 
   mode = newMode;
 
   const arrival =
-    document.getElementById('arrivalBtn');
+    document.getElementById(
+      'arrivalBtn'
+    );
 
   const departure =
-    document.getElementById('departureBtn');
+    document.getElementById(
+      'departureBtn'
+    );
 
   const modeText =
-    document.getElementById('modeText');
+    document.getElementById(
+      'modeText'
+    );
 
-  if (mode === 'arrival') {
 
-    arrival.classList.remove('inactive');
-    departure.classList.remove('active');
+  if (
+    mode === 'arrival'
+  ) {
+
+    arrival
+      .classList
+      .remove('inactive');
+
+    departure
+      .classList
+      .remove('active');
 
     modeText.innerText =
       '現在：登園モード';
 
   } else {
 
-    arrival.classList.add('inactive');
-    departure.classList.add('active');
+    arrival
+      .classList
+      .add('inactive');
+
+    departure
+      .classList
+      .add('active');
 
     modeText.innerText =
       '現在：下校モード';
@@ -224,14 +1024,20 @@ function setMode(newMode) {
 }
 
 
-// QR読取
-function onScanSuccess(decodedText) {
+// ================================
+// QR読み取り
+// ================================
+
+function onScanSuccess(
+  decodedText
+) {
 
   if (processing) {
     return;
   }
 
-  const now = Date.now();
+  const now =
+    Date.now();
 
   if (
     decodedText === lastCode &&
@@ -240,97 +1046,74 @@ function onScanSuccess(decodedText) {
     return;
   }
 
-  lastCode = decodedText;
-  lastScan = now;
-  processing = true;
+  lastCode =
+    decodedText;
 
-  sendToAppsScript(decodedText);
-}
+  lastScan =
+    now;
+
+  processing =
+    true;
 
 
-// Apps Scriptへ送る
-function sendToAppsScript(qrText) {
+  jsonpRequest(
+    {
+      action: 'scan',
+      qr: decodedText,
+      mode: mode
+    },
 
-  const callbackName =
-    'coralCallback_' + Date.now();
-
-  window[callbackName] =
     function(result) {
 
-      processing = false;
+      processing =
+        false;
 
-      if (result && result.success) {
 
-        playSuccessSound();
+      if (
+        result &&
+        result.success
+      ) {
+
+        successSound();
 
         showResult(
           true,
-          result.message || '受付しました',
+          result.message ||
+            '受付しました',
           result.time || ''
         );
 
       } else {
 
-        playErrorSound();
+        errorSound();
 
         showResult(
           false,
-          result && result.message
+          result &&
+          result.message
             ? result.message
             : '登録できませんでした。',
-          result && result.subMessage
+          result &&
+          result.subMessage
             ? result.subMessage
             : ''
         );
       }
 
-      try {
-        delete window[callbackName];
-      } catch (e) {}
 
       setTimeout(
         hideResult,
         3500
       );
-    };
-
-
-  const script =
-    document.createElement('script');
-
-  script.src =
-    GAS_URL +
-    '?action=scan' +
-    '&qr=' +
-    encodeURIComponent(qrText) +
-    '&mode=' +
-    encodeURIComponent(mode) +
-    '&callback=' +
-    encodeURIComponent(callbackName) +
-    '&t=' +
-    Date.now();
-
-
-  script.onerror =
-    function() {
-
-      processing = false;
-
-      playErrorSound();
-
-      showResult(
-        false,
-        '通信できませんでした',
-        'インターネット接続を確認してください。'
-      );
-    };
-
-
-  document.body.appendChild(script);
+    }
+  );
 }
 
 
+// ================================
 // 結果表示
+// ================================
+
 function showResult(
   success,
   main,
@@ -338,52 +1121,68 @@ function showResult(
 ) {
 
   const box =
-    document.getElementById('resultBox');
+    document.getElementById(
+      'resultBox'
+    );
 
   box.className =
     success
       ? 'success'
       : 'error';
 
+  box.style.display =
+    'block';
+
+
   document
-    .getElementById('mainMessage')
+    .getElementById(
+      'mainMessage'
+    )
     .innerText =
       success
         ? '✓ ' + main
         : main;
 
+
   document
-    .getElementById('subMessage')
+    .getElementById(
+      'subMessage'
+    )
     .innerText =
       sub || '';
 }
 
 
+// ================================
 // 結果を消す
+// ================================
+
 function hideResult() {
 
   const box =
-    document.getElementById('resultBox');
+    document.getElementById(
+      'resultBox'
+    );
 
-  box.className = '';
-
-  box.style.display = 'none';
+  box.style.display =
+    'none';
 }
 
 
-// 成功音
-function playSuccessSound() {
+// ================================
+// 音
+// ================================
+
+function successSound() {
   beep(880, 0.18);
 }
 
 
-// エラー音
-function playErrorSound() {
+function errorSound() {
   beep(300, 0.30);
 }
 
 
-// 音
 function beep(
   frequency,
   seconds
@@ -405,12 +1204,16 @@ function beep(
       context.createGain();
 
     oscillator.connect(gain);
-    gain.connect(context.destination);
+
+    gain.connect(
+      context.destination
+    );
 
     oscillator.frequency.value =
       frequency;
 
-    gain.gain.value = 0.15;
+    gain.gain.value =
+      0.15;
 
     oscillator.start();
 
@@ -423,7 +1226,10 @@ function beep(
 }
 
 
+// ================================
 // カメラ起動
+// ================================
+
 function startCamera() {
 
   const scanner =
@@ -431,14 +1237,18 @@ function startCamera() {
       'reader',
       {
         fps: 10,
+
         qrbox: {
           width: 250,
           height: 250
         },
-        rememberLastUsedCamera: true
+
+        rememberLastUsedCamera:
+          true
       },
       false
     );
+
 
   scanner.render(
     onScanSuccess,
@@ -447,7 +1257,10 @@ function startCamera() {
 }
 
 
+// ================================
 // 起動
+// ================================
+
 window.addEventListener(
   'load',
   function() {
@@ -462,3 +1275,4 @@ window.addEventListener(
 
 </body>
 </html>
+
