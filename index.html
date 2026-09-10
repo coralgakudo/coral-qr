@@ -38,19 +38,19 @@
       margin-bottom: 20px;
     }
 
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     .buttons {
       display: flex;
       gap: 12px;
       margin-bottom: 15px;
-    }
-
-    button {
-      border: none;
-      border-radius: 14px;
-      padding: 18px;
-      font-size: 22px;
-      font-weight: bold;
-      cursor: pointer;
     }
 
     .mainBtn {
@@ -104,13 +104,11 @@
     }
 
     #resultBox.success {
-      display: block;
       background: #dcfce7;
       border: 3px solid #22c55e;
     }
 
     #resultBox.error {
-      display: block;
       background: #fee2e2;
       border: 3px solid #ef4444;
     }
@@ -121,7 +119,7 @@
     }
 
     #subMessage {
-      font-size: 20px;
+      font-size: 19px;
       margin-top: 8px;
     }
 
@@ -206,7 +204,47 @@
       text-align: center;
       font-size: 30px;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+    }
+
+    .viewSwitch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .switchBtn {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .switchBtn.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .monthNav,
+    .yearNav {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .navBtn {
+      background: #e5e7eb;
+      color: #111827;
+      font-size: 16px;
+      padding: 12px 6px;
+    }
+
+    .periodTitle {
+      text-align: center;
+      font-size: 23px;
+      font-weight: bold;
+      white-space: nowrap;
     }
 
     .summaryGrid {
@@ -274,17 +312,51 @@
       margin-top: 3px;
     }
 
+    .yearGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .monthCard {
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 15px 8px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .monthCardTitle {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    .monthCardText {
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .hidden {
+      display: none;
+    }
+
     @media (max-width: 500px) {
       h1 {
         font-size: 27px;
       }
 
       button {
-        font-size: 20px;
-        padding: 16px 10px;
+        font-size: 19px;
+        padding: 15px 8px;
       }
 
-      .studentGrid {
+      .periodTitle {
+        font-size: 19px;
+      }
+
+      .yearGrid {
         grid-template-columns: 1fr 1fr;
       }
     }
@@ -295,10 +367,7 @@
 
 <div class="container">
 
-  <!-- ========================= -->
-  <!-- QR受付画面 -->
-  <!-- ========================= -->
-
+  <!-- QR受付 -->
   <div id="qrPage" class="page activePage">
 
     <h1>コーラル学童クラブ</h1>
@@ -356,10 +425,7 @@
   </div>
 
 
-  <!-- ========================= -->
-  <!-- 学校選択 -->
-  <!-- ========================= -->
-
+  <!-- 学校 -->
   <div id="schoolPage" class="page">
 
     <button
@@ -394,10 +460,7 @@
   </div>
 
 
-  <!-- ========================= -->
-  <!-- 学年選択 -->
-  <!-- ========================= -->
-
+  <!-- 学年 -->
   <div id="gradePage" class="page">
 
     <button
@@ -407,44 +470,21 @@
       ← 学校選択に戻る
     </button>
 
-    <div id="selectedSchoolTitle" class="sectionTitle">
-    </div>
+    <div id="selectedSchoolTitle" class="sectionTitle"></div>
 
     <div class="choiceGrid">
-
-      <button class="choiceBtn" onclick="selectGrade(1)">
-        1年生
-      </button>
-
-      <button class="choiceBtn" onclick="selectGrade(2)">
-        2年生
-      </button>
-
-      <button class="choiceBtn" onclick="selectGrade(3)">
-        3年生
-      </button>
-
-      <button class="choiceBtn" onclick="selectGrade(4)">
-        4年生
-      </button>
-
-      <button class="choiceBtn" onclick="selectGrade(5)">
-        5年生
-      </button>
-
-      <button class="choiceBtn" onclick="selectGrade(6)">
-        6年生
-      </button>
-
+      <button class="choiceBtn" onclick="selectGrade(1)">1年生</button>
+      <button class="choiceBtn" onclick="selectGrade(2)">2年生</button>
+      <button class="choiceBtn" onclick="selectGrade(3)">3年生</button>
+      <button class="choiceBtn" onclick="selectGrade(4)">4年生</button>
+      <button class="choiceBtn" onclick="selectGrade(5)">5年生</button>
+      <button class="choiceBtn" onclick="selectGrade(6)">6年生</button>
     </div>
 
   </div>
 
 
-  <!-- ========================= -->
   <!-- 児童一覧 -->
-  <!-- ========================= -->
-
   <div id="studentPage" class="page">
 
     <button
@@ -454,22 +494,16 @@
       ← 学年選択に戻る
     </button>
 
-    <div id="studentTitle" class="sectionTitle">
-    </div>
+    <div id="studentTitle" class="sectionTitle"></div>
 
-    <div id="studentList" class="studentGrid">
-    </div>
+    <div id="studentList" class="studentGrid"></div>
 
-    <div id="studentLoading" class="loading">
-    </div>
+    <div id="studentLoading" class="loading"></div>
 
   </div>
 
 
-  <!-- ========================= -->
   <!-- 児童詳細 -->
-  <!-- ========================= -->
-
   <div id="detailPage" class="page">
 
     <button
@@ -481,28 +515,116 @@
 
     <div class="detailCard">
 
-      <div id="detailName" class="studentName">
+      <div id="detailName" class="studentName"></div>
+
+      <div class="viewSwitch">
+        <button
+          id="monthlyBtn"
+          class="switchBtn active"
+          onclick="showMonthlyView()"
+        >
+          月間
+        </button>
+
+        <button
+          id="yearlyBtn"
+          class="switchBtn"
+          onclick="showYearlyView()"
+        >
+          年間
+        </button>
       </div>
 
-      <div class="summaryGrid">
 
-        <div class="summaryBox">
-          <div id="useDays" class="summaryNumber">-</div>
-          <div class="summaryLabel">
-            今月の利用日数
+      <!-- 月間 -->
+      <div id="monthlyView">
+
+        <div class="monthNav">
+
+          <button
+            class="navBtn"
+            onclick="changeMonth(-1)"
+          >
+            〈 前月
+          </button>
+
+          <div
+            id="monthTitle"
+            class="periodTitle"
+          >
           </div>
+
+          <button
+            class="navBtn"
+            onclick="changeMonth(1)"
+          >
+            翌月 〉
+          </button>
+
         </div>
 
-        <div class="summaryBox">
-          <div id="absenceDays" class="summaryNumber">-</div>
-          <div class="summaryLabel">
-            今月の欠席日数
+        <div class="summaryGrid">
+
+          <div class="summaryBox">
+            <div id="useDays" class="summaryNumber">-</div>
+            <div class="summaryLabel">利用日数</div>
           </div>
+
+          <div class="summaryBox">
+            <div id="absenceDays" class="summaryNumber">-</div>
+            <div class="summaryLabel">欠席日数</div>
+          </div>
+
         </div>
+
+        <div id="calendar" class="calendar"></div>
 
       </div>
 
-      <div id="calendar" class="calendar">
+
+      <!-- 年間 -->
+      <div id="yearlyView" class="hidden">
+
+        <div class="yearNav">
+
+          <button
+            class="navBtn"
+            onclick="changeYear(-1)"
+          >
+            〈 前年
+          </button>
+
+          <div
+            id="yearTitle"
+            class="periodTitle"
+          >
+          </div>
+
+          <button
+            class="navBtn"
+            onclick="changeYear(1)"
+          >
+            翌年 〉
+          </button>
+
+        </div>
+
+        <div class="summaryGrid">
+
+          <div class="summaryBox">
+            <div id="yearUseDays" class="summaryNumber">-</div>
+            <div class="summaryLabel">年間利用日数</div>
+          </div>
+
+          <div class="summaryBox">
+            <div id="yearAbsenceDays" class="summaryNumber">-</div>
+            <div class="summaryLabel">年間欠席日数</div>
+          </div>
+
+        </div>
+
+        <div id="yearGrid" class="yearGrid"></div>
+
       </div>
 
     </div>
@@ -517,24 +639,24 @@
 const GAS_URL =
   'https://script.google.com/macros/s/AKfycbw4h90m1o43II_d-JCrGjTucM6bOL5u_JCW5jEltHzm5tozR1zKPnPpov-OaHFZvwRz-g/exec';
 
-
 let mode = 'arrival';
-
 let processing = false;
-
 let lastCode = '';
-
 let lastScan = 0;
 
 let selectedSchool = '';
-
 let selectedGrade = '';
 
+let selectedStudentId = '';
+let selectedStudentName = '';
 
-// ================================
+const today = new Date();
+
+let selectedYear = today.getFullYear();
+let selectedMonth = today.getMonth() + 1;
+
+
 // ページ切替
-// ================================
-
 function showPage(pageId) {
 
   document
@@ -549,20 +671,13 @@ function showPage(pageId) {
 }
 
 
-// ================================
 // 職員メニュー
-// ================================
-
 function openStaffMenu() {
-
   showPage('schoolPage');
 }
 
 
-// ================================
-// 学校選択
-// ================================
-
+// 学校
 function selectSchool(school) {
 
   selectedSchool = school;
@@ -576,10 +691,7 @@ function selectSchool(school) {
 }
 
 
-// ================================
-// 学年選択
-// ================================
-
+// 学年
 function selectGrade(grade) {
 
   selectedGrade = grade;
@@ -598,10 +710,7 @@ function selectGrade(grade) {
 }
 
 
-// ================================
-// 児童一覧取得
-// ================================
-
+// 児童一覧
 function loadStudents() {
 
   const list =
@@ -615,7 +724,6 @@ function loadStudents() {
   loading.innerText =
     '児童一覧を読み込んでいます...';
 
-
   jsonpRequest(
     {
       action: 'students',
@@ -627,10 +735,7 @@ function loadStudents() {
 
       loading.innerText = '';
 
-      if (
-        !result ||
-        !result.success
-      ) {
+      if (!result || !result.success) {
 
         loading.innerText =
           result && result.message
@@ -639,7 +744,6 @@ function loadStudents() {
 
         return;
       }
-
 
       if (
         !result.students ||
@@ -651,7 +755,6 @@ function loadStudents() {
 
         return;
       }
-
 
       result.students.forEach(
         function(student) {
@@ -682,50 +785,146 @@ function loadStudents() {
 }
 
 
-// ================================
 // 児童詳細
-// ================================
-
 function openStudentDetail(
   studentId,
   studentName
 ) {
 
-  showPage('detailPage');
+  selectedStudentId =
+    studentId;
+
+  selectedStudentName =
+    studentName;
+
+  const now = new Date();
+
+  selectedYear =
+    now.getFullYear();
+
+  selectedMonth =
+    now.getMonth() + 1;
 
   document
     .getElementById('detailName')
     .innerText =
       studentName;
 
+  showPage('detailPage');
+
+  showMonthlyView();
+}
+
+
+// 月間表示
+function showMonthlyView() {
+
+  document
+    .getElementById('monthlyView')
+    .classList.remove('hidden');
+
+  document
+    .getElementById('yearlyView')
+    .classList.add('hidden');
+
+  document
+    .getElementById('monthlyBtn')
+    .classList.add('active');
+
+  document
+    .getElementById('yearlyBtn')
+    .classList.remove('active');
+
+  loadStudentMonth();
+}
+
+
+// 年間表示
+function showYearlyView() {
+
+  document
+    .getElementById('monthlyView')
+    .classList.add('hidden');
+
+  document
+    .getElementById('yearlyView')
+    .classList.remove('hidden');
+
+  document
+    .getElementById('monthlyBtn')
+    .classList.remove('active');
+
+  document
+    .getElementById('yearlyBtn')
+    .classList.add('active');
+
+  loadStudentYear();
+}
+
+
+// 前月・翌月
+function changeMonth(diff) {
+
+  selectedMonth += diff;
+
+  if (selectedMonth < 1) {
+    selectedMonth = 12;
+    selectedYear--;
+  }
+
+  if (selectedMonth > 12) {
+    selectedMonth = 1;
+    selectedYear++;
+  }
+
+  loadStudentMonth();
+}
+
+
+// 前年・翌年
+function changeYear(diff) {
+
+  selectedYear += diff;
+
+  loadStudentYear();
+}
+
+
+// 月間データ
+function loadStudentMonth() {
+
+  document
+    .getElementById('monthTitle')
+    .innerText =
+      selectedYear +
+      '年' +
+      selectedMonth +
+      '月';
+
   document
     .getElementById('useDays')
-    .innerText =
-      '-';
+    .innerText = '-';
 
   document
     .getElementById('absenceDays')
-    .innerText =
-      '-';
+    .innerText = '-';
 
   document
     .getElementById('calendar')
     .innerHTML =
       '<div class="loading">読み込み中...</div>';
 
-
   jsonpRequest(
     {
       action: 'studentMonth',
-      studentId: studentId
+      studentId: selectedStudentId,
+      year: selectedYear,
+      month: selectedMonth
     },
 
     function(result) {
 
-      if (
-        !result ||
-        !result.success
-      ) {
+      if (!result || !result.success) {
 
         document
           .getElementById('calendar')
@@ -735,18 +934,15 @@ function openStudentDetail(
         return;
       }
 
-
       document
         .getElementById('useDays')
         .innerText =
           result.useDays || 0;
 
-
       document
         .getElementById('absenceDays')
         .innerText =
           result.absenceDays || 0;
-
 
       drawCalendar(
         result.year,
@@ -758,10 +954,108 @@ function openStudentDetail(
 }
 
 
-// ================================
-// カレンダー表示
-// ================================
+// 年間データ
+function loadStudentYear() {
 
+  document
+    .getElementById('yearTitle')
+    .innerText =
+      selectedYear + '年';
+
+  document
+    .getElementById('yearUseDays')
+    .innerText = '-';
+
+  document
+    .getElementById('yearAbsenceDays')
+    .innerText = '-';
+
+  document
+    .getElementById('yearGrid')
+    .innerHTML =
+      '<div class="loading">読み込み中...</div>';
+
+  jsonpRequest(
+    {
+      action: 'studentYear',
+      studentId: selectedStudentId,
+      year: selectedYear
+    },
+
+    function(result) {
+
+      if (!result || !result.success) {
+
+        document
+          .getElementById('yearGrid')
+          .innerHTML =
+            '<div class="loading">データを取得できませんでした。</div>';
+
+        return;
+      }
+
+      document
+        .getElementById('yearUseDays')
+        .innerText =
+          result.useDays || 0;
+
+      document
+        .getElementById('yearAbsenceDays')
+        .innerText =
+          result.absenceDays || 0;
+
+      drawYear(result.months || []);
+    }
+  );
+}
+
+
+// 年間12か月表示
+function drawYear(months) {
+
+  const grid =
+    document.getElementById('yearGrid');
+
+  grid.innerHTML = '';
+
+  months.forEach(
+    function(item) {
+
+      const card =
+        document.createElement('div');
+
+      card.className =
+        'monthCard';
+
+      card.innerHTML =
+        '<div class="monthCardTitle">' +
+        item.month +
+        '月</div>' +
+        '<div class="monthCardText">' +
+        '利用 ' +
+        item.useDays +
+        '日<br>' +
+        '欠席 ' +
+        item.absenceDays +
+        '日' +
+        '</div>';
+
+      card.onclick =
+        function() {
+
+          selectedMonth =
+            item.month;
+
+          showMonthlyView();
+        };
+
+      grid.appendChild(card);
+    }
+  );
+}
+
+
+// カレンダー
 function drawCalendar(
   year,
   month,
@@ -773,15 +1067,8 @@ function drawCalendar(
 
   calendar.innerHTML = '';
 
-
   [
-    '日',
-    '月',
-    '火',
-    '水',
-    '木',
-    '金',
-    '土'
+    '日','月','火','水','木','金','土'
   ].forEach(
     function(dayName) {
 
@@ -798,7 +1085,6 @@ function drawCalendar(
     }
   );
 
-
   const firstDay =
     new Date(
       year,
@@ -806,19 +1092,16 @@ function drawCalendar(
       1
     ).getDay();
 
-
   for (
     let i = 0;
     i < firstDay;
     i++
   ) {
 
-    const blank =
-      document.createElement('div');
-
-    calendar.appendChild(blank);
+    calendar.appendChild(
+      document.createElement('div')
+    );
   }
-
 
   days.forEach(
     function(dayData) {
@@ -829,26 +1112,23 @@ function drawCalendar(
       box.className =
         'calDay';
 
-
       if (
         dayData.status === 'present'
       ) {
-
         box.classList.add('present');
-
-      } else if (
-        dayData.status === 'absent'
-      ) {
-
-        box.classList.add('absent');
-
-      } else if (
-        dayData.status === 'future'
-      ) {
-
-        box.classList.add('future');
       }
 
+      if (
+        dayData.status === 'absent'
+      ) {
+        box.classList.add('absent');
+      }
+
+      if (
+        dayData.status === 'future'
+      ) {
+        box.classList.add('future');
+      }
 
       let mark = '';
 
@@ -864,7 +1144,6 @@ function drawCalendar(
         mark = '×';
       }
 
-
       box.innerHTML =
         '<div>' +
         dayData.day +
@@ -873,17 +1152,13 @@ function drawCalendar(
         mark +
         '</div>';
 
-
       calendar.appendChild(box);
     }
   );
 }
 
 
-// ================================
 // JSONP通信
-// ================================
-
 function jsonpRequest(
   params,
   callback
@@ -897,6 +1172,8 @@ function jsonpRequest(
       Math.random() * 100000
     );
 
+  const script =
+    document.createElement('script');
 
   window[callbackName] =
     function(result) {
@@ -907,19 +1184,16 @@ function jsonpRequest(
         delete window[callbackName];
       } catch (e) {}
 
-      if (
-        script &&
-        script.parentNode
-      ) {
+      if (script.parentNode) {
         script.parentNode.removeChild(script);
       }
     };
-
 
   const query =
     Object.keys(params)
       .map(
         function(key) {
+
           return (
             encodeURIComponent(key) +
             '=' +
@@ -931,22 +1205,14 @@ function jsonpRequest(
       )
       .join('&');
 
-
-  const script =
-    document.createElement('script');
-
-
   script.src =
     GAS_URL +
     '?' +
     query +
     '&callback=' +
-    encodeURIComponent(
-      callbackName
-    ) +
+    encodeURIComponent(callbackName) +
     '&t=' +
     Date.now();
-
 
   script.onerror =
     function() {
@@ -960,63 +1226,42 @@ function jsonpRequest(
       try {
         delete window[callbackName];
       } catch (e) {}
+
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
     };
 
-
-  document.body.appendChild(
-    script
-  );
+  document.body.appendChild(script);
 }
 
 
-// ================================
 // 登園・下校切替
-// ================================
-
 function setMode(newMode) {
 
   mode = newMode;
 
   const arrival =
-    document.getElementById(
-      'arrivalBtn'
-    );
+    document.getElementById('arrivalBtn');
 
   const departure =
-    document.getElementById(
-      'departureBtn'
-    );
+    document.getElementById('departureBtn');
 
   const modeText =
-    document.getElementById(
-      'modeText'
-    );
+    document.getElementById('modeText');
 
+  if (mode === 'arrival') {
 
-  if (
-    mode === 'arrival'
-  ) {
-
-    arrival
-      .classList
-      .remove('inactive');
-
-    departure
-      .classList
-      .remove('active');
+    arrival.classList.remove('inactive');
+    departure.classList.remove('active');
 
     modeText.innerText =
       '現在：登園モード';
 
   } else {
 
-    arrival
-      .classList
-      .add('inactive');
-
-    departure
-      .classList
-      .add('active');
+    arrival.classList.add('inactive');
+    departure.classList.add('active');
 
     modeText.innerText =
       '現在：下校モード';
@@ -1024,13 +1269,8 @@ function setMode(newMode) {
 }
 
 
-// ================================
-// QR読み取り
-// ================================
-
-function onScanSuccess(
-  decodedText
-) {
+// QR読取
+function onScanSuccess(decodedText) {
 
   if (processing) {
     return;
@@ -1055,7 +1295,6 @@ function onScanSuccess(
   processing =
     true;
 
-
   jsonpRequest(
     {
       action: 'scan',
@@ -1067,7 +1306,6 @@ function onScanSuccess(
 
       processing =
         false;
-
 
       if (
         result &&
@@ -1100,7 +1338,6 @@ function onScanSuccess(
         );
       }
 
-
       setTimeout(
         hideResult,
         3500
@@ -1110,10 +1347,7 @@ function onScanSuccess(
 }
 
 
-// ================================
 // 結果表示
-// ================================
-
 function showResult(
   success,
   main,
@@ -1121,9 +1355,7 @@ function showResult(
 ) {
 
   const box =
-    document.getElementById(
-      'resultBox'
-    );
+    document.getElementById('resultBox');
 
   box.className =
     success
@@ -1133,55 +1365,38 @@ function showResult(
   box.style.display =
     'block';
 
-
   document
-    .getElementById(
-      'mainMessage'
-    )
+    .getElementById('mainMessage')
     .innerText =
       success
         ? '✓ ' + main
         : main;
 
-
   document
-    .getElementById(
-      'subMessage'
-    )
+    .getElementById('subMessage')
     .innerText =
       sub || '';
 }
 
 
-// ================================
 // 結果を消す
-// ================================
-
 function hideResult() {
 
-  const box =
-    document.getElementById(
-      'resultBox'
-    );
-
-  box.style.display =
-    'none';
+  document
+    .getElementById('resultBox')
+    .style.display =
+      'none';
 }
 
 
-// ================================
 // 音
-// ================================
-
 function successSound() {
   beep(880, 0.18);
 }
 
-
 function errorSound() {
   beep(300, 0.30);
 }
-
 
 function beep(
   frequency,
@@ -1204,10 +1419,7 @@ function beep(
       context.createGain();
 
     oscillator.connect(gain);
-
-    gain.connect(
-      context.destination
-    );
+    gain.connect(context.destination);
 
     oscillator.frequency.value =
       frequency;
@@ -1226,10 +1438,7 @@ function beep(
 }
 
 
-// ================================
-// カメラ起動
-// ================================
-
+// カメラ
 function startCamera() {
 
   const scanner =
@@ -1249,7 +1458,6 @@ function startCamera() {
       false
     );
 
-
   scanner.render(
     onScanSuccess,
     function() {}
@@ -1257,10 +1465,7 @@ function startCamera() {
 }
 
 
-// ================================
 // 起動
-// ================================
-
 window.addEventListener(
   'load',
   function() {
@@ -1275,4 +1480,3 @@ window.addEventListener(
 
 </body>
 </html>
-
