@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>コーラル学童 登園確認</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #222;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px 18px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+      margin-top: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 27px;
+      margin: 0 0 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    .name {
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .statusBox {
+      border-radius: 18px;
+      padding: 24px 12px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .arrived {
+      background: #dcfce7;
+      border: 3px solid #22c55e;
+    }
+
+    .notArrived {
+      background: #f3f4f6;
+      border: 3px solid #d1d5db;
+    }
+
+    .error {
+      background: #fee2e2;
+      border: 3px solid #ef4444;
+    }
+
+    .statusMain {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .statusTime {
+      font-size: 22px;
+      margin-top: 10px;
+    }
+
+    .update {
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+      margin-top: 15px;
+    }
+
+    .reloadBtn {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      font-size: 19px;
+      font-weight: bold;
+      background: #2563eb;
+      color: white;
+      margin-top: 18px;
+      cursor: pointer;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px 0;
+      font-size: 18px;
+    }
+
+    .notice {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #777;
+      line-height: 1.6;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>コーラル学童クラブ</h1>
+
+    <div class="subtitle">
+      本日の登園確認
+    </div>
+
+    <div id="loading" class="loading">
+      読み込み中...
+    </div>
+
+    <div id="content" style="display:none;">
+
+      <div id="childName" class="name"></div>
+
+      <div id="statusBox" class="statusBox notArrived">
+
+        <div id="statusMain" class="statusMain">
+          まだ登園していません
+        </div>
+
+        <div id="statusTime" class="statusTime"></div>
+
+      </div>
+
+      <button
+        class="reloadBtn"
+        onclick="loadStatus()"
+      >
+        最新の状態に更新
+      </button>
+
+      <div id="updateText" class="update"></div>
+
+    </div>
+
+    <div class="notice">
+      この画面は保護者専用です。<br>
+      専用QRコードまたは専用URLからアクセスしてください。
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const GAS_URL =
+  'https://script.google.com/macros/s/AKfycbw4h90m1o43II_d-JCrGjTucM6bOL5u_JCW5jEltHzm5tozR1zKPnPpov-OaHFZvwRz-g/exec';
+
+function getKey() {
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  return params.get('key') || '';
+}
+
+
+function loadStatus() {
+
+  const key =
+    getKey();
+
+  const loading =
+    document.getElementById('loading');
+
+  const content =
+    document.getElementById('content');
+
+  loading.style.display =
+    'block';
+
+  content.style.display =
+    'none';
+
+
+  if (!key) {
+
+    showError(
+      '保護者用キーがありません。'
+    );
+
+    return;
+  }
+
+
+  jsonpRequest(
+    {
+      action: 'guardianStatus',
+      key: key
+    },
+
+    function(result) {
+
+      if (
+        !result ||
+        !result.success
+      ) {
+
+        showError(
+          result && result.message
+            ? result.message
+            : '情報を取得できませんでした。'
+        );
+
+        return;
+      }
+
+
+      loading.style.display =
+        'none';
+
+      content.style.display =
+        'block';
+
+
+      document
+        .getElementById('childName')
+        .innerText =
+          result.name || '';
+
+
+      const box =
+        document.getElementById('statusBox');
+
+      const main =
+        document.getElementById('statusMain');
+
+      const time =
+        document.getElementById('statusTime');
+
+
+      box.className =
+        'statusBox';
+
+
+      if (result.arrived) {
+
+        box.classList.add(
+          'arrived'
+        );
+
+        main.innerText =
+          '登園済みです';
+
+        time.innerText =
+          result.arrivalTime
+            ? '登園時刻 ' +
+              result.arrivalTime
+            : '';
+
+      } else {
+
+        box.classList.add(
+          'notArrived'
+        );
+
+        main.innerText =
+          'まだ登園していません';
+
+        time.innerText =
+          '';
+      }
+
+
+      const now =
+        new Date();
+
+      document
+        .getElementById('updateText')
+        .innerText =
+          '最終更新 ' +
+          now.toLocaleTimeString(
+            'ja-JP',
+            {
+              hour: '2-digit',
+              minute: '2-digit'
+            }
+          );
+    }
+  );
+}
+
+
+function showError(
+  message
+) {
+
+  const loading =
+    document.getElementById('loading');
+
+  const content =
+    document.getElementById('content');
+
+  loading.innerText =
+    message;
+
+  loading.style.display =
+    'block';
+
+  loading.className =
+    'loading error';
+
+  content.style.display =
+    'none';
+}
+
+
+function jsonpRequest(
+  params,
+  callback
+) {
+
+  const callbackName =
+    'guardian_' +
+    Date.now() +
+    '_' +
+    Math.floor(
+      Math.random() * 99999
+    );
+
+  const script =
+    document.createElement('script');
+
+
+  window[callbackName] =
+    function(result) {
+
+      callback(result);
+
+      try {
+        delete window[callbackName];
+      } catch (e) {}
+
+      if (
+        script.parentNode
+      ) {
+        script.parentNode
+          .removeChild(script);
+      }
+    };
+
+
+  const query =
+    Object.keys(params)
+      .map(
+        function(key) {
+
+          return (
+            encodeURIComponent(key) +
+            '=' +
+            encodeURIComponent(
+              params[key]
+            )
+          );
+        }
+      )
+      .join('&');
+
+
+  script.src =
+    GAS_URL +
+    '?' +
+    query +
+    '&callback=' +
+    encodeURIComponent(
+      callbackName
+    ) +
+    '&t=' +
+    Date.now();
+
+
+  script.onerror =
+    function() {
+
+      callback({
+        success: false,
+        message:
+          '通信できませんでした。'
+      });
+    };
+
+
+  document.body.appendChild(
+    script
+  );
+}
+
+
+window.addEventListener(
+  'load',
+  loadStatus
+);
+
+</script>
+
+</body>
+</html>
