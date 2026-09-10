@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>コーラル学童クラブ QR受付</title>
+
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    #reader {
+      max-width: 500px;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>コーラル学童クラブ</h1>
+  <p>QRカメラテスト</p>
+
+  <div id="reader"></div>
+
+  <script>
+    const scanner = new Html5QrcodeScanner(
+      "reader",
+      {
+        fps: 10,
+        qrbox: 250
+      },
+      false
+    );
+
+    scanner.render(
+      function(decodedText) {
+        alert("読み取り成功：" + decodedText);
+      },
+      function(error) {
+      }
+    );
+  </script>
+
+</body>
+</html>
