@@ -42,6 +42,7 @@
       text-align: center;
       color: #666;
       margin-bottom: 24px;
+      font-size: 18px;
     }
 
     .name {
@@ -173,7 +174,8 @@
 <script>
 
 const GAS_URL =
-  'https://script.google.com/macros/s/AKfycbw4h90m1o43II_d-JCrGjTucM6bOL5u_JCW5jEltHzm5tozR1zKPnPpov-OaHFZvwRz-g/exec';
+  'https://script.google.com/macros/s/AKfycbxAMeNS1z_EnTgojm2KCGrhcimRXFr0XZD-FlhVGShh-AjCj3xTpyPYLaIAhx-wUKZo9g/exec';
+
 
 function getKey() {
 
@@ -196,6 +198,12 @@ function loadStatus() {
 
   const content =
     document.getElementById('content');
+
+  loading.className =
+    'loading';
+
+  loading.innerText =
+    '読み込み中...';
 
   loading.style.display =
     'block';
@@ -312,9 +320,7 @@ function loadStatus() {
 }
 
 
-function showError(
-  message
-) {
+function showError(message) {
 
   const loading =
     document.getElementById('loading');
@@ -352,22 +358,33 @@ function jsonpRequest(
   const script =
     document.createElement('script');
 
+  let finished = false;
+
+
+  function cleanup() {
+
+    if (script.parentNode) {
+      script.parentNode.removeChild(script);
+    }
+
+    try {
+      delete window[callbackName];
+    } catch (e) {}
+  }
+
 
   window[callbackName] =
     function(result) {
 
+      if (finished) {
+        return;
+      }
+
+      finished = true;
+
       callback(result);
 
-      try {
-        delete window[callbackName];
-      } catch (e) {}
-
-      if (
-        script.parentNode
-      ) {
-        script.parentNode
-          .removeChild(script);
-      }
+      cleanup();
     };
 
 
@@ -403,16 +420,46 @@ function jsonpRequest(
   script.onerror =
     function() {
 
+      if (finished) {
+        return;
+      }
+
+      finished = true;
+
       callback({
         success: false,
         message:
           '通信できませんでした。'
       });
+
+      cleanup();
     };
 
 
   document.body.appendChild(
     script
+  );
+
+
+  setTimeout(
+    function() {
+
+      if (finished) {
+        return;
+      }
+
+      finished = true;
+
+      callback({
+        success: false,
+        message:
+          '通信に時間がかかっています。'
+      });
+
+      cleanup();
+
+    },
+    15000
   );
 }
 
