@@ -92,6 +92,7 @@
       background: white;
       padding: 14px;
       border-radius: 18px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.08);
     }
 
     #reader {
@@ -147,6 +148,7 @@
       background: white;
       border-radius: 18px;
       padding: 18px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.08);
     }
 
     .studentName {
@@ -196,8 +198,8 @@
 
     .summaryGrid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
       margin-bottom: 18px;
     }
 
@@ -205,16 +207,16 @@
       text-align: center;
       background: #f3f4f6;
       border-radius: 14px;
-      padding: 16px 5px;
+      padding: 15px 5px;
     }
 
     .summaryNumber {
-      font-size: 32px;
+      font-size: 30px;
       font-weight: bold;
     }
 
     .summaryLabel {
-      font-size: 15px;
+      font-size: 14px;
       margin-top: 4px;
     }
 
@@ -231,11 +233,12 @@
     }
 
     .calDay {
-      min-height: 58px;
+      min-height: 62px;
       border-radius: 8px;
       background: #f9fafb;
       text-align: center;
       padding: 5px 2px;
+      font-size: 14px;
     }
 
     .present {
@@ -244,6 +247,11 @@
 
     .absent {
       background: #fee2e2;
+    }
+
+    .closed {
+      background: #e5e7eb;
+      color: #555;
     }
 
     .future {
@@ -255,6 +263,12 @@
       font-size: 19px;
       font-weight: bold;
       margin-top: 4px;
+    }
+
+    .reason {
+      font-size: 10px;
+      margin-top: 2px;
+      line-height: 1.2;
     }
 
     .yearGrid {
@@ -279,7 +293,7 @@
     }
 
     .monthData {
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
     .loading {
@@ -289,35 +303,43 @@
     }
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
-    #resultBox {
-      display: none;
+    .cancelArea {
+      margin-top: 24px;
+      border-top: 2px solid #e5e7eb;
+      padding-top: 18px;
+    }
+
+    .cancelTitle {
       text-align: center;
-      margin-top: 16px;
-      padding: 20px;
-      border-radius: 15px;
-    }
-
-    #resultBox.success {
-      background: #dcfce7;
-      border: 3px solid #22c55e;
-    }
-
-    #resultBox.error {
-      background: #fee2e2;
-      border: 3px solid #ef4444;
-    }
-
-    #mainMessage {
-      font-size: 25px;
-      font-weight: bold;
-    }
-
-    #subMessage {
-      margin-top: 7px;
       font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .cancelGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .cancelArrivalBtn {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .cancelDepartureBtn {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .cancelMessage {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 16px;
+      font-weight: bold;
     }
 
     .note {
@@ -325,62 +347,230 @@
       margin-top: 14px;
       color: #666;
     }
+
+
+    /* =====================================
+       QR結果 全画面表示
+       ===================================== */
+
+    #fullResult {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 25px;
+      color: white;
+    }
+
+    #fullResult.show {
+      display: flex;
+    }
+
+    #fullResult.successScreen {
+      background: #16a34a;
+    }
+
+    #fullResult.duplicateScreen {
+      background: #dc2626;
+    }
+
+    #fullResult.errorScreen {
+      background: #b91c1c;
+    }
+
+    .resultInner {
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .resultIcon {
+      font-size: 90px;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .resultTitle {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 24px;
+    }
+
+    .resultName {
+      font-size: 46px;
+      font-weight: bold;
+      margin-bottom: 18px;
+    }
+
+    .resultMode {
+      font-size: 34px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .resultTime {
+      font-size: 32px;
+      margin-bottom: 18px;
+    }
+
+    .resultSub {
+      font-size: 22px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 600px) {
+      .resultIcon {
+        font-size: 70px;
+      }
+
+      .resultTitle {
+        font-size: 38px;
+      }
+
+      .resultName {
+        font-size: 36px;
+      }
+
+      .resultMode {
+        font-size: 28px;
+      }
+
+      .resultTime {
+        font-size: 26px;
+      }
+
+      .summaryNumber {
+        font-size: 26px;
+      }
+    }
   </style>
 </head>
 
 <body>
 
+
+<!-- =====================================
+     全画面 QR結果
+     ===================================== -->
+
+<div id="fullResult">
+
+  <div class="resultInner">
+
+    <div id="resultIcon" class="resultIcon"></div>
+
+    <div id="resultTitle" class="resultTitle"></div>
+
+    <div id="resultName" class="resultName"></div>
+
+    <div id="resultMode" class="resultMode"></div>
+
+    <div id="resultTime" class="resultTime"></div>
+
+    <div id="resultSub" class="resultSub"></div>
+
+  </div>
+
+</div>
+
+
+
 <div class="container">
 
-  <!-- QR受付 -->
+
+  <!-- =====================================
+       QR受付
+       ===================================== -->
+
   <div id="qrPage" class="page active">
 
     <h1>コーラル学童クラブ</h1>
-    <div class="subtitle">QR 登園・下校受付</div>
 
-    <div class="mainButtons">
-      <button id="arrivalBtn" onclick="setMode('arrival')">登園</button>
-      <button id="departureBtn" onclick="setMode('departure')">下校</button>
+    <div class="subtitle">
+      QR 登園・下校受付
     </div>
 
-    <div id="modeText">現在：登園モード</div>
+
+    <div class="mainButtons">
+
+      <button
+        id="arrivalBtn"
+        onclick="setMode('arrival')"
+      >
+        登園
+      </button>
+
+      <button
+        id="departureBtn"
+        onclick="setMode('departure')"
+      >
+        下校
+      </button>
+
+    </div>
+
+
+    <div id="modeText">
+      現在：登園モード
+    </div>
+
 
     <div class="cameraBox">
       <div id="reader"></div>
     </div>
 
-    <div id="resultBox">
-      <div id="mainMessage"></div>
-      <div id="subMessage"></div>
-    </div>
 
     <div class="note">
       QRコードをカメラにかざしてください
     </div>
 
-    <button class="staffBtn" onclick="openStaffMenu()">
+
+    <button
+      class="staffBtn"
+      onclick="openStaffMenu()"
+    >
       職員メニュー
     </button>
 
   </div>
 
 
-  <!-- 学校 -->
+
+  <!-- =====================================
+       学校選択
+       ===================================== -->
+
   <div id="schoolPage" class="page">
 
-    <button class="backBtn" onclick="showPage('qrPage')">
+    <button
+      class="backBtn"
+      onclick="showPage('qrPage')"
+    >
       ← QR受付に戻る
     </button>
 
-    <div class="title">学校を選んでください</div>
+
+    <div class="title">
+      学校を選んでください
+    </div>
+
 
     <div class="choiceGrid">
 
-      <button class="choiceBtn" onclick="selectSchool('読谷小学校')">
+      <button
+        class="choiceBtn"
+        onclick="selectSchool('読谷小学校')"
+      >
         読谷小学校
       </button>
 
-      <button class="choiceBtn" onclick="selectSchool('喜名小学校')">
+
+      <button
+        class="choiceBtn"
+        onclick="selectSchool('喜名小学校')"
+      >
         喜名小学校
       </button>
 
@@ -389,52 +579,116 @@
   </div>
 
 
-  <!-- 学年 -->
+
+  <!-- =====================================
+       学年選択
+       ===================================== -->
+
   <div id="gradePage" class="page">
 
-    <button class="backBtn" onclick="showPage('schoolPage')">
+    <button
+      class="backBtn"
+      onclick="showPage('schoolPage')"
+    >
       ← 学校選択に戻る
     </button>
 
-    <div id="schoolTitle" class="title"></div>
+
+    <div
+      id="schoolTitle"
+      class="title"
+    ></div>
+
 
     <div class="choiceGrid">
-      <button class="choiceBtn" onclick="selectGrade(1)">1年生</button>
-      <button class="choiceBtn" onclick="selectGrade(2)">2年生</button>
-      <button class="choiceBtn" onclick="selectGrade(3)">3年生</button>
-      <button class="choiceBtn" onclick="selectGrade(4)">4年生</button>
-      <button class="choiceBtn" onclick="selectGrade(5)">5年生</button>
-      <button class="choiceBtn" onclick="selectGrade(6)">6年生</button>
+
+      <button class="choiceBtn" onclick="selectGrade(1)">
+        1年生
+      </button>
+
+      <button class="choiceBtn" onclick="selectGrade(2)">
+        2年生
+      </button>
+
+      <button class="choiceBtn" onclick="selectGrade(3)">
+        3年生
+      </button>
+
+      <button class="choiceBtn" onclick="selectGrade(4)">
+        4年生
+      </button>
+
+      <button class="choiceBtn" onclick="selectGrade(5)">
+        5年生
+      </button>
+
+      <button class="choiceBtn" onclick="selectGrade(6)">
+        6年生
+      </button>
+
     </div>
 
   </div>
 
 
-  <!-- 児童一覧 -->
+
+  <!-- =====================================
+       児童一覧
+       ===================================== -->
+
   <div id="studentPage" class="page">
 
-    <button class="backBtn" onclick="showPage('gradePage')">
+    <button
+      class="backBtn"
+      onclick="showPage('gradePage')"
+    >
       ← 学年選択に戻る
     </button>
 
-    <div id="studentTitle" class="title"></div>
 
-    <div id="studentList" class="studentGrid"></div>
-    <div id="studentLoading" class="loading"></div>
+    <div
+      id="studentTitle"
+      class="title"
+    ></div>
+
+
+    <div
+      id="studentList"
+      class="studentGrid"
+    ></div>
+
+
+    <div
+      id="studentLoading"
+      class="loading"
+    ></div>
 
   </div>
 
 
-  <!-- 詳細 -->
+
+  <!-- =====================================
+       児童詳細
+       ===================================== -->
+
   <div id="detailPage" class="page">
 
-    <button class="backBtn" onclick="showPage('studentPage')">
+    <button
+      class="backBtn"
+      onclick="showPage('studentPage')"
+    >
       ← 児童一覧に戻る
     </button>
 
+
     <div class="detailCard">
 
-      <div id="detailName" class="studentName"></div>
+
+      <div
+        id="detailName"
+        class="studentName"
+      ></div>
+
 
       <div class="switchGrid">
 
@@ -445,6 +699,7 @@
         >
           月間
         </button>
+
 
         <button
           id="yearBtn"
@@ -457,78 +712,232 @@
       </div>
 
 
+
       <!-- 月間 -->
+
       <div id="monthView">
+
 
         <div class="navGrid">
 
-          <button class="navBtn" onclick="changeMonth(-1)">
+          <button
+            class="navBtn"
+            onclick="changeMonth(-1)"
+          >
             〈 前月
           </button>
 
-          <div id="monthTitle" class="periodTitle">
-            2026年9月
-          </div>
 
-          <button class="navBtn" onclick="changeMonth(1)">
+          <div
+            id="monthTitle"
+            class="periodTitle"
+          ></div>
+
+
+          <button
+            class="navBtn"
+            onclick="changeMonth(1)"
+          >
             翌月 〉
           </button>
 
         </div>
 
+
+
         <div class="summaryGrid">
 
           <div class="summaryBox">
-            <div id="monthUse" class="summaryNumber">0</div>
-            <div class="summaryLabel">利用日数</div>
+
+            <div
+              id="monthUse"
+              class="summaryNumber"
+            >
+              -
+            </div>
+
+            <div class="summaryLabel">
+              登所
+            </div>
+
           </div>
 
+
           <div class="summaryBox">
-            <div id="monthAbsent" class="summaryNumber">0</div>
-            <div class="summaryLabel">欠席日数</div>
+
+            <div
+              id="monthAbsent"
+              class="summaryNumber"
+            >
+              -
+            </div>
+
+            <div class="summaryLabel">
+              欠席
+            </div>
+
+          </div>
+
+
+          <div class="summaryBox">
+
+            <div
+              id="monthClosed"
+              class="summaryNumber"
+            >
+              -
+            </div>
+
+            <div class="summaryLabel">
+              休所
+            </div>
+
           </div>
 
         </div>
 
-        <div id="calendar" class="calendar"></div>
+
+
+        <div
+          id="calendar"
+          class="calendar"
+        ></div>
 
       </div>
 
 
+
       <!-- 年間 -->
-      <div id="yearView" class="hidden">
+
+      <div
+        id="yearView"
+        class="hidden"
+      >
+
 
         <div class="navGrid">
 
-          <button class="navBtn" onclick="changeYear(-1)">
+          <button
+            class="navBtn"
+            onclick="changeYear(-1)"
+          >
             〈 前年
           </button>
 
-          <div id="yearTitle" class="periodTitle">
-            2026年
-          </div>
 
-          <button class="navBtn" onclick="changeYear(1)">
+          <div
+            id="yearTitle"
+            class="periodTitle"
+          ></div>
+
+
+          <button
+            class="navBtn"
+            onclick="changeYear(1)"
+          >
             翌年 〉
           </button>
 
         </div>
 
+
+
         <div class="summaryGrid">
 
           <div class="summaryBox">
-            <div id="yearUse" class="summaryNumber">0</div>
-            <div class="summaryLabel">年間利用日数</div>
+
+            <div
+              id="yearUse"
+              class="summaryNumber"
+            >
+              -
+            </div>
+
+            <div class="summaryLabel">
+              年間登所
+            </div>
+
           </div>
 
+
           <div class="summaryBox">
-            <div id="yearAbsent" class="summaryNumber">0</div>
-            <div class="summaryLabel">年間欠席日数</div>
+
+            <div
+              id="yearAbsent"
+              class="summaryNumber"
+            >
+              -
+            </div>
+
+            <div class="summaryLabel">
+              年間欠席
+            </div>
+
+          </div>
+
+
+          <div class="summaryBox">
+
+            <div
+              id="yearClosed"
+              class="summaryNumber"
+            >
+              -
+            </div>
+
+            <div class="summaryLabel">
+              年間休所
+            </div>
+
           </div>
 
         </div>
 
-        <div id="yearGrid" class="yearGrid"></div>
+
+        <div
+          id="yearGrid"
+          class="yearGrid"
+        ></div>
+
+      </div>
+
+
+
+      <!-- 取消 -->
+
+      <div class="cancelArea">
+
+        <div class="cancelTitle">
+          本日の登録を修正
+        </div>
+
+
+        <div class="cancelGrid">
+
+          <button
+            id="cancelArrivalBtn"
+            class="cancelArrivalBtn"
+            onclick="confirmCancel('arrival')"
+          >
+            登園取消
+          </button>
+
+
+          <button
+            id="cancelDepartureBtn"
+            class="cancelDepartureBtn"
+            onclick="confirmCancel('departure')"
+          >
+            下校取消
+          </button>
+
+        </div>
+
+
+        <div
+          id="cancelMessage"
+          class="cancelMessage"
+        ></div>
 
       </div>
 
@@ -539,117 +948,206 @@
 </div>
 
 
+
 <script>
 
+// =====================================
+// 新しいGAS URL
+// =====================================
+
 const GAS_URL =
-  'https://script.google.com/macros/s/AKfycbw4h90m1o43II_d-JCrGjTucM6bOL5u_JCW5jEltHzm5tozR1zKPnPpov-OaHFZvwRz-g/exec';
+  'https://script.google.com/macros/s/AKfycbxAMeNS1z_EnTgojm2KCGrhcimRXFr0XZD-FlhVGShh-AjCj3xTpyPYLaIAhx-wUKZo9g/exec';
+
+
+// =====================================
+// 基本変数
+// =====================================
 
 let mode = 'arrival';
+
 let processing = false;
+
 let lastCode = '';
+
 let lastScan = 0;
 
 let selectedSchool = '';
+
 let selectedGrade = '';
 
 let selectedStudentId = '';
+
 let selectedStudentName = '';
 
 const now = new Date();
 
-let selectedYear = now.getFullYear();
-let selectedMonth = now.getMonth() + 1;
+let selectedYear =
+  now.getFullYear();
+
+let selectedMonth =
+  now.getMonth() + 1;
 
 
-// ページ表示
+// =====================================
+// ページ切替
+// =====================================
+
 function showPage(id) {
 
   document
     .querySelectorAll('.page')
     .forEach(function(page) {
-      page.classList.remove('active');
+
+      page.classList.remove(
+        'active'
+      );
     });
+
 
   document
     .getElementById(id)
-    .classList.add('active');
+    .classList.add(
+      'active'
+    );
 }
 
 
+// =====================================
 // 職員メニュー
+// =====================================
+
 function openStaffMenu() {
-  showPage('schoolPage');
+
+  showPage(
+    'schoolPage'
+  );
 }
 
 
-// 学校選択
-function selectSchool(school) {
+// =====================================
+// 学校
+// =====================================
 
-  selectedSchool = school;
+function selectSchool(
+  school
+) {
+
+  selectedSchool =
+    school;
+
 
   document
-    .getElementById('schoolTitle')
+    .getElementById(
+      'schoolTitle'
+    )
     .innerText =
-      school + '：学年を選択';
+      school +
+      '：学年を選択';
 
-  showPage('gradePage');
+
+  showPage(
+    'gradePage'
+  );
 }
 
 
-// 学年選択
-function selectGrade(grade) {
+// =====================================
+// 学年
+// =====================================
 
-  selectedGrade = grade;
+function selectGrade(
+  grade
+) {
+
+  selectedGrade =
+    grade;
+
 
   document
-    .getElementById('studentTitle')
+    .getElementById(
+      'studentTitle'
+    )
     .innerText =
       selectedSchool +
       ' ' +
       grade +
       '年生';
 
-  showPage('studentPage');
+
+  showPage(
+    'studentPage'
+  );
+
 
   loadStudents();
 }
 
 
+// =====================================
 // 児童一覧
+// =====================================
+
 function loadStudents() {
 
   const list =
-    document.getElementById('studentList');
+    document.getElementById(
+      'studentList'
+    );
+
 
   const loading =
-    document.getElementById('studentLoading');
+    document.getElementById(
+      'studentLoading'
+    );
 
-  list.innerHTML = '';
+
+  list.innerHTML =
+    '';
+
 
   loading.innerText =
     '児童一覧を読み込んでいます...';
 
+
   jsonpRequest(
+
     {
-      action: 'students',
-      school: selectedSchool,
-      grade: selectedGrade
+      action:
+        'students',
+
+      school:
+        selectedSchool,
+
+      grade:
+        selectedGrade
     },
+
+
     function(result) {
 
-      loading.innerText = '';
+      loading.innerText =
+        '';
 
-      if (!result || !result.success) {
+
+      if (
+        !result ||
+        !result.success
+      ) {
 
         loading.innerText =
-          result && result.message
+          result &&
+          result.message
             ? result.message
             : '児童一覧を取得できませんでした。';
 
         return;
       }
 
-      if (!result.students || result.students.length === 0) {
+
+      if (
+        !result.students ||
+        result.students.length === 0
+      ) {
 
         loading.innerText =
           'この学年の児童はいません。';
@@ -657,43 +1155,63 @@ function loadStudents() {
         return;
       }
 
-      result.students.forEach(function(student) {
 
-        const btn =
-          document.createElement('button');
+      result.students.forEach(
+        function(student) {
 
-        btn.className =
-          'studentBtn';
-
-        btn.innerText =
-          student.name;
-
-        btn.onclick =
-          function() {
-
-            openStudent(
-              student.id,
-              student.name
+          const btn =
+            document.createElement(
+              'button'
             );
-          };
 
-        list.appendChild(btn);
-      });
+
+          btn.className =
+            'studentBtn';
+
+
+          btn.innerText =
+            student.name;
+
+
+          btn.onclick =
+            function() {
+
+              openStudent(
+                student.id,
+                student.name
+              );
+            };
+
+
+          list.appendChild(
+            btn
+          );
+        }
+      );
     }
   );
 }
 
 
+// =====================================
 // 児童詳細
+// =====================================
+
 function openStudent(
   id,
   name
 ) {
 
-  selectedStudentId = id;
-  selectedStudentName = name;
+  selectedStudentId =
+    id;
 
-  const d = new Date();
+  selectedStudentName =
+    name;
+
+
+  const d =
+    new Date();
+
 
   selectedYear =
     d.getFullYear();
@@ -701,153 +1219,296 @@ function openStudent(
   selectedMonth =
     d.getMonth() + 1;
 
+
   document
-    .getElementById('detailName')
+    .getElementById(
+      'detailName'
+    )
     .innerText =
       name;
 
-  showPage('detailPage');
+
+  document
+    .getElementById(
+      'cancelMessage'
+    )
+    .innerText =
+      '';
+
+
+  showPage(
+    'detailPage'
+  );
+
 
   showMonthView();
+
+  loadTodayStatus();
 }
 
 
+// =====================================
 // 月間表示
+// =====================================
+
 function showMonthView() {
 
   document
-    .getElementById('monthView')
-    .classList.remove('hidden');
+    .getElementById(
+      'monthView'
+    )
+    .classList.remove(
+      'hidden'
+    );
+
 
   document
-    .getElementById('yearView')
-    .classList.add('hidden');
+    .getElementById(
+      'yearView'
+    )
+    .classList.add(
+      'hidden'
+    );
+
 
   document
-    .getElementById('monthBtn')
-    .classList.add('selected');
+    .getElementById(
+      'monthBtn'
+    )
+    .classList.add(
+      'selected'
+    );
+
 
   document
-    .getElementById('yearBtn')
-    .classList.remove('selected');
+    .getElementById(
+      'yearBtn'
+    )
+    .classList.remove(
+      'selected'
+    );
+
 
   loadMonth();
 }
 
 
+// =====================================
 // 年間表示
+// =====================================
+
 function showYearView() {
 
   document
-    .getElementById('monthView')
-    .classList.add('hidden');
+    .getElementById(
+      'monthView'
+    )
+    .classList.add(
+      'hidden'
+    );
+
 
   document
-    .getElementById('yearView')
-    .classList.remove('hidden');
+    .getElementById(
+      'yearView'
+    )
+    .classList.remove(
+      'hidden'
+    );
+
 
   document
-    .getElementById('monthBtn')
-    .classList.remove('selected');
+    .getElementById(
+      'monthBtn'
+    )
+    .classList.remove(
+      'selected'
+    );
+
 
   document
-    .getElementById('yearBtn')
-    .classList.add('selected');
+    .getElementById(
+      'yearBtn'
+    )
+    .classList.add(
+      'selected'
+    );
+
 
   loadYear();
 }
 
 
+// =====================================
 // 前月・翌月
-function changeMonth(change) {
+// =====================================
 
-  selectedMonth += change;
+function changeMonth(
+  change
+) {
 
-  if (selectedMonth < 1) {
+  selectedMonth +=
+    change;
+
+
+  if (
+    selectedMonth < 1
+  ) {
+
     selectedMonth = 12;
+
     selectedYear--;
   }
 
-  if (selectedMonth > 12) {
+
+  if (
+    selectedMonth > 12
+  ) {
+
     selectedMonth = 1;
+
     selectedYear++;
   }
+
 
   loadMonth();
 }
 
 
+// =====================================
 // 前年・翌年
-function changeYear(change) {
+// =====================================
 
-  selectedYear += change;
+function changeYear(
+  change
+) {
+
+  selectedYear +=
+    change;
+
 
   loadYear();
 }
 
 
-// 月間取得
+// =====================================
+// 月間
+// =====================================
+
 function loadMonth() {
 
-  // ★ここで必ず年月を表示
   document
-    .getElementById('monthTitle')
+    .getElementById(
+      'monthTitle'
+    )
     .innerText =
       selectedYear +
       '年' +
       selectedMonth +
       '月';
 
-  document
-    .getElementById('monthUse')
-    .innerText = '-';
 
   document
-    .getElementById('monthAbsent')
-    .innerText = '-';
+    .getElementById(
+      'monthUse'
+    )
+    .innerText =
+      '-';
+
 
   document
-    .getElementById('calendar')
+    .getElementById(
+      'monthAbsent'
+    )
+    .innerText =
+      '-';
+
+
+  document
+    .getElementById(
+      'monthClosed'
+    )
+    .innerText =
+      '-';
+
+
+  document
+    .getElementById(
+      'calendar'
+    )
     .innerHTML =
       '<div class="loading">読み込み中...</div>';
 
+
   jsonpRequest(
+
     {
-      action: 'studentMonth',
-      studentId: selectedStudentId,
-      year: selectedYear,
-      month: selectedMonth
+      action:
+        'studentMonth',
+
+      studentId:
+        selectedStudentId,
+
+      year:
+        selectedYear,
+
+      month:
+        selectedMonth
     },
+
+
     function(result) {
 
-      if (!result || !result.success) {
+      if (
+        !result ||
+        !result.success
+      ) {
 
         document
-          .getElementById('calendar')
+          .getElementById(
+            'calendar'
+          )
           .innerHTML =
             '<div class="loading">データを取得できませんでした。</div>';
 
         return;
       }
 
-      // GAS側の年月でも再設定
+
       document
-        .getElementById('monthTitle')
+        .getElementById(
+          'monthTitle'
+        )
         .innerText =
           result.year +
           '年' +
           result.month +
           '月';
 
+
       document
-        .getElementById('monthUse')
+        .getElementById(
+          'monthUse'
+        )
         .innerText =
           result.useDays || 0;
 
+
       document
-        .getElementById('monthAbsent')
+        .getElementById(
+          'monthAbsent'
+        )
         .innerText =
           result.absenceDays || 0;
+
+
+      document
+        .getElementById(
+          'monthClosed'
+        )
+        .innerText =
+          result.closedDays || 0;
+
 
       drawCalendar(
         result.year,
@@ -859,62 +1520,117 @@ function loadMonth() {
 }
 
 
-// 年間取得
+// =====================================
+// 年間
+// =====================================
+
 function loadYear() {
 
-  // ★ここで必ず年を表示
   document
-    .getElementById('yearTitle')
+    .getElementById(
+      'yearTitle'
+    )
     .innerText =
       selectedYear +
       '年';
 
-  document
-    .getElementById('yearUse')
-    .innerText = '-';
 
   document
-    .getElementById('yearAbsent')
-    .innerText = '-';
+    .getElementById(
+      'yearUse'
+    )
+    .innerText =
+      '-';
+
 
   document
-    .getElementById('yearGrid')
+    .getElementById(
+      'yearAbsent'
+    )
+    .innerText =
+      '-';
+
+
+  document
+    .getElementById(
+      'yearClosed'
+    )
+    .innerText =
+      '-';
+
+
+  document
+    .getElementById(
+      'yearGrid'
+    )
     .innerHTML =
       '<div class="loading">読み込み中...</div>';
 
+
   jsonpRequest(
+
     {
-      action: 'studentYear',
-      studentId: selectedStudentId,
-      year: selectedYear
+      action:
+        'studentYear',
+
+      studentId:
+        selectedStudentId,
+
+      year:
+        selectedYear
     },
+
+
     function(result) {
 
-      if (!result || !result.success) {
+      if (
+        !result ||
+        !result.success
+      ) {
 
         document
-          .getElementById('yearGrid')
+          .getElementById(
+            'yearGrid'
+          )
           .innerHTML =
             '<div class="loading">年間データを取得できませんでした。</div>';
 
         return;
       }
 
+
       document
-        .getElementById('yearTitle')
+        .getElementById(
+          'yearTitle'
+        )
         .innerText =
           result.year +
           '年';
 
+
       document
-        .getElementById('yearUse')
+        .getElementById(
+          'yearUse'
+        )
         .innerText =
           result.useDays || 0;
 
+
       document
-        .getElementById('yearAbsent')
+        .getElementById(
+          'yearAbsent'
+        )
         .innerText =
           result.absenceDays || 0;
+
+
+      document
+        .getElementById(
+          'yearClosed'
+        )
+        .innerText =
+          result.closedDays || 0;
+
 
       drawYear(
         result.months || []
@@ -924,49 +1640,82 @@ function loadYear() {
 }
 
 
+// =====================================
 // 年間12か月
-function drawYear(months) {
+// =====================================
+
+function drawYear(
+  months
+) {
 
   const grid =
-    document.getElementById('yearGrid');
+    document.getElementById(
+      'yearGrid'
+    );
 
-  grid.innerHTML = '';
 
-  months.forEach(function(item) {
+  grid.innerHTML =
+    '';
 
-    const card =
-      document.createElement('div');
 
-    card.className =
-      'monthCard';
+  months.forEach(
+    function(item) {
 
-    card.innerHTML =
-      '<div class="monthName">' +
-      item.month +
-      '月</div>' +
-      '<div class="monthData">' +
-      '利用：' +
-      item.useDays +
-      '日<br>' +
-      '欠席：' +
-      item.absenceDays +
-      '日</div>';
+      const card =
+        document.createElement(
+          'div'
+        );
 
-    card.onclick =
-      function() {
 
-        selectedMonth =
-          item.month;
+      card.className =
+        'monthCard';
 
-        showMonthView();
-      };
 
-    grid.appendChild(card);
-  });
+      card.innerHTML =
+        '<div class="monthName">' +
+        item.month +
+        '月</div>' +
+
+        '<div class="monthData">' +
+
+        '登所：' +
+        item.useDays +
+        '日<br>' +
+
+        '欠席：' +
+        item.absenceDays +
+        '日<br>' +
+
+        '休所：' +
+        item.closedDays +
+        '日' +
+
+        '</div>';
+
+
+      card.onclick =
+        function() {
+
+          selectedMonth =
+            item.month;
+
+
+          showMonthView();
+        };
+
+
+      grid.appendChild(
+        card
+      );
+    }
+  );
 }
 
 
+// =====================================
 // カレンダー
+// =====================================
+
 function drawCalendar(
   year,
   month,
@@ -974,24 +1723,45 @@ function drawCalendar(
 ) {
 
   const calendar =
-    document.getElementById('calendar');
+    document.getElementById(
+      'calendar'
+    );
 
-  calendar.innerHTML = '';
 
-  ['日','月','火','水','木','金','土']
-    .forEach(function(name) {
+  calendar.innerHTML =
+    '';
+
+
+  [
+    '日',
+    '月',
+    '火',
+    '水',
+    '木',
+    '金',
+    '土'
+  ].forEach(
+    function(name) {
 
       const head =
-        document.createElement('div');
+        document.createElement(
+          'div'
+        );
+
 
       head.className =
         'calHead';
 
+
       head.innerText =
         name;
 
-      calendar.appendChild(head);
-    });
+
+      calendar.appendChild(
+        head
+      );
+    }
+  );
 
 
   const first =
@@ -999,7 +1769,8 @@ function drawCalendar(
       year,
       month - 1,
       1
-    ).getDay();
+    )
+    .getDay();
 
 
   for (
@@ -1009,219 +1780,370 @@ function drawCalendar(
   ) {
 
     calendar.appendChild(
-      document.createElement('div')
+      document.createElement(
+        'div'
+      )
     );
   }
 
 
-  days.forEach(function(item) {
+  days.forEach(
+    function(item) {
 
-    const box =
-      document.createElement('div');
+      const box =
+        document.createElement(
+          'div'
+        );
 
-    box.className =
-      'calDay';
 
-    if (item.status === 'present') {
-      box.classList.add('present');
+      box.className =
+        'calDay';
+
+
+      let mark =
+        '';
+
+      let reason =
+        '';
+
+
+      if (
+        item.status ===
+        'present'
+      ) {
+
+        box.classList.add(
+          'present'
+        );
+
+        mark =
+          '○';
+      }
+
+
+      if (
+        item.status ===
+        'absent'
+      ) {
+
+        box.classList.add(
+          'absent'
+        );
+
+        mark =
+          '×';
+      }
+
+
+      if (
+        item.status ===
+        'closed'
+      ) {
+
+        box.classList.add(
+          'closed'
+        );
+
+        mark =
+          '休';
+
+        reason =
+          item.closedReason ||
+          '';
+      }
+
+
+      if (
+        item.status ===
+        'future'
+      ) {
+
+        box.classList.add(
+          'future'
+        );
+      }
+
+
+      box.innerHTML =
+        '<div>' +
+        item.day +
+        '</div>' +
+
+        '<div class="mark">' +
+        mark +
+        '</div>' +
+
+        (
+          reason
+            ? '<div class="reason">' +
+              reason +
+              '</div>'
+            : ''
+        );
+
+
+      calendar.appendChild(
+        box
+      );
     }
-
-    if (item.status === 'absent') {
-      box.classList.add('absent');
-    }
-
-    if (item.status === 'future') {
-      box.classList.add('future');
-    }
-
-    let mark = '';
-
-    if (item.status === 'present') {
-      mark = '○';
-    }
-
-    if (item.status === 'absent') {
-      mark = '×';
-    }
-
-    box.innerHTML =
-      '<div>' +
-      item.day +
-      '</div>' +
-      '<div class="mark">' +
-      mark +
-      '</div>';
-
-    calendar.appendChild(box);
-  });
+  );
 }
 
 
-// JSONP通信
-function jsonpRequest(
-  params,
-  callback
-) {
+// =====================================
+// 今日の登録状態
+// =====================================
 
-  const callbackName =
-    'coral_' +
-    Date.now() +
-    '_' +
-    Math.floor(
-      Math.random() * 99999
-    );
+function loadTodayStatus() {
 
-  const script =
-    document.createElement('script');
+  jsonpRequest(
 
-  let finished = false;
+    {
+      action:
+        'todayStatus',
+
+      studentId:
+        selectedStudentId
+    },
 
 
-  function cleanup() {
-
-    if (script.parentNode) {
-      script.parentNode.removeChild(script);
-    }
-
-    try {
-      delete window[callbackName];
-    } catch (e) {}
-  }
-
-
-  window[callbackName] =
     function(result) {
 
-      if (finished) {
-        return;
-      }
-
-      finished = true;
-
-      callback(result);
-
-      cleanup();
-    };
-
-
-  const query =
-    Object.keys(params)
-      .map(function(key) {
-
-        return (
-          encodeURIComponent(key) +
-          '=' +
-          encodeURIComponent(
-            params[key]
-          )
+      const arrivalBtn =
+        document.getElementById(
+          'cancelArrivalBtn'
         );
-      })
-      .join('&');
 
 
-  script.src =
-    GAS_URL +
-    '?' +
-    query +
-    '&callback=' +
-    encodeURIComponent(callbackName) +
-    '&t=' +
-    Date.now();
+      const departureBtn =
+        document.getElementById(
+          'cancelDepartureBtn'
+        );
 
 
-  script.onerror =
-    function() {
+      if (
+        !result ||
+        !result.success
+      ) {
 
-      if (finished) {
+        arrivalBtn.disabled =
+          true;
+
+        departureBtn.disabled =
+          true;
+
         return;
       }
 
-      finished = true;
 
-      callback({
-        success: false,
-        message:
-          '通信できませんでした。'
-      });
-
-      cleanup();
-    };
+      arrivalBtn.disabled =
+        !result.hasArrival;
 
 
-  document.body.appendChild(script);
+      departureBtn.disabled =
+        !result.hasDeparture;
 
 
-  // 15秒経っても返らない時
-  setTimeout(function() {
+      arrivalBtn.style.opacity =
+        result.hasArrival
+          ? '1'
+          : '0.4';
 
-    if (finished) {
-      return;
+
+      departureBtn.style.opacity =
+        result.hasDeparture
+          ? '1'
+          : '0.4';
     }
-
-    finished = true;
-
-    callback({
-      success: false,
-      message:
-        '通信に時間がかかっています。'
-    });
-
-    cleanup();
-
-  }, 15000);
+  );
 }
 
 
-// 登園・下校
-function setMode(newMode) {
+// =====================================
+// 取消
+// =====================================
 
-  mode = newMode;
+function confirmCancel(
+  type
+) {
 
-  const arrival =
-    document.getElementById('arrivalBtn');
+  let message;
 
-  const departure =
-    document.getElementById('departureBtn');
 
-  if (mode === 'arrival') {
+  if (
+    type ===
+    'arrival'
+  ) {
 
-    arrival.classList.remove('off');
-    departure.classList.remove('on');
-
-    document
-      .getElementById('modeText')
-      .innerText =
-        '現在：登園モード';
+    message =
+      selectedStudentName +
+      'さんの本日の登園記録を取り消しますか？';
 
   } else {
 
-    arrival.classList.add('off');
-    departure.classList.add('on');
+    message =
+      selectedStudentName +
+      'さんの本日の下校記録を取り消しますか？';
+  }
+
+
+  if (
+    !window.confirm(
+      message
+    )
+  ) {
+
+    return;
+  }
+
+
+  jsonpRequest(
+
+    {
+      action:
+        'cancelAttendance',
+
+      studentId:
+        selectedStudentId,
+
+      cancelType:
+        type
+    },
+
+
+    function(result) {
+
+      const box =
+        document.getElementById(
+          'cancelMessage'
+        );
+
+
+      if (
+        result &&
+        result.success
+      ) {
+
+        box.innerText =
+          result.message;
+
+
+        loadTodayStatus();
+
+        loadMonth();
+
+      } else {
+
+        box.innerText =
+          result &&
+          result.message
+            ? result.message
+            : '取消できませんでした。';
+      }
+    }
+  );
+}
+
+
+// =====================================
+// 登園・下校モード
+// =====================================
+
+function setMode(
+  newMode
+) {
+
+  mode =
+    newMode;
+
+
+  const arrival =
+    document.getElementById(
+      'arrivalBtn'
+    );
+
+
+  const departure =
+    document.getElementById(
+      'departureBtn'
+    );
+
+
+  if (
+    mode ===
+    'arrival'
+  ) {
+
+    arrival.classList.remove(
+      'off'
+    );
+
+
+    departure.classList.remove(
+      'on'
+    );
+
 
     document
-      .getElementById('modeText')
+      .getElementById(
+        'modeText'
+      )
+      .innerText =
+        '現在：登園モード';
+
+
+  } else {
+
+    arrival.classList.add(
+      'off'
+    );
+
+
+    departure.classList.add(
+      'on'
+    );
+
+
+    document
+      .getElementById(
+        'modeText'
+      )
       .innerText =
         '現在：下校モード';
   }
 }
 
 
-// QR読取
-function onScanSuccess(decodedText) {
+// =====================================
+// QR成功
+// =====================================
 
-  if (processing) {
+function onScanSuccess(
+  decodedText
+) {
+
+  if (
+    processing
+  ) {
+
     return;
   }
+
 
   const time =
     Date.now();
 
+
   if (
-    decodedText === lastCode &&
-    time - lastScan < 3000
+    decodedText ===
+      lastCode &&
+    time - lastScan <
+      2500
   ) {
+
     return;
   }
+
 
   lastCode =
     decodedText;
@@ -1234,95 +2156,388 @@ function onScanSuccess(decodedText) {
 
 
   jsonpRequest(
+
     {
-      action: 'scan',
-      qr: decodedText,
-      mode: mode
+      action:
+        'scan',
+
+      qr:
+        decodedText,
+
+      mode:
+        mode
     },
+
+
     function(result) {
 
       processing =
         false;
+
 
       if (
         result &&
         result.success
       ) {
 
-        beep(880, 0.18);
+        successSound();
 
-        showResult(
-          true,
-          result.message,
-          result.time || ''
+
+        showFullResult(
+          'success',
+          result
         );
+
+
+      } else if (
+        result &&
+        result.type ===
+        'duplicate'
+      ) {
+
+        duplicateSound();
+
+
+        showFullResult(
+          'duplicate',
+          result
+        );
+
 
       } else {
 
-        beep(300, 0.30);
+        errorSound();
 
-        showResult(
-          false,
-          result && result.message
-            ? result.message
-            : '登録できませんでした。',
-          result && result.subMessage
-            ? result.subMessage
-            : ''
+
+        showFullResult(
+          'error',
+          result || {}
         );
       }
-
-      setTimeout(
-        hideResult,
-        3500
-      );
     }
   );
 }
 
 
-// 結果
-function showResult(
-  success,
-  main,
-  sub
+// =====================================
+// 全画面表示
+// =====================================
+
+function showFullResult(
+  type,
+  result
 ) {
 
-  const box =
-    document.getElementById('resultBox');
+  const screen =
+    document.getElementById(
+      'fullResult'
+    );
 
-  box.className =
-    success
-      ? 'success'
-      : 'error';
 
-  box.style.display =
-    'block';
+  screen.className =
+    'show';
 
-  document
-    .getElementById('mainMessage')
-    .innerText =
-      success
-        ? '✓ ' + main
-        : main;
 
-  document
-    .getElementById('subMessage')
-    .innerText =
-      sub || '';
+  if (
+    type ===
+    'success'
+  ) {
+
+    screen.classList.add(
+      'successScreen'
+    );
+
+
+    document
+      .getElementById(
+        'resultIcon'
+      )
+      .innerText =
+        '✓';
+
+
+    document
+      .getElementById(
+        'resultTitle'
+      )
+      .innerText =
+        '読み取りました！';
+
+
+    document
+      .getElementById(
+        'resultName'
+      )
+      .innerText =
+        result.name ||
+        '';
+
+
+    document
+      .getElementById(
+        'resultMode'
+      )
+      .innerText =
+        result.mode ||
+        '';
+
+
+    document
+      .getElementById(
+        'resultTime'
+      )
+      .innerText =
+        result.time
+          ? result.time
+          : '';
+
+
+    document
+      .getElementById(
+        'resultSub'
+      )
+      .innerText =
+        '';
+
+
+  } else if (
+    type ===
+    'duplicate'
+  ) {
+
+    screen.classList.add(
+      'duplicateScreen'
+    );
+
+
+    document
+      .getElementById(
+        'resultIcon'
+      )
+      .innerText =
+        '⚠';
+
+
+    document
+      .getElementById(
+        'resultTitle'
+      )
+      .innerText =
+        result.message ||
+        'すでに読み取り済みです';
+
+
+    document
+      .getElementById(
+        'resultName'
+      )
+      .innerText =
+        result.name ||
+        '';
+
+
+    document
+      .getElementById(
+        'resultMode'
+      )
+      .innerText =
+        '';
+
+
+    document
+      .getElementById(
+        'resultTime'
+      )
+      .innerText =
+        '';
+
+
+    document
+      .getElementById(
+        'resultSub'
+      )
+      .innerText =
+        result.subMessage ||
+        '';
+
+
+  } else {
+
+    screen.classList.add(
+      'errorScreen'
+    );
+
+
+    document
+      .getElementById(
+        'resultIcon'
+      )
+      .innerText =
+        '×';
+
+
+    document
+      .getElementById(
+        'resultTitle'
+      )
+      .innerText =
+        result.message ||
+        '読み取れませんでした';
+
+
+    document
+      .getElementById(
+        'resultName'
+      )
+      .innerText =
+        result.name ||
+        '';
+
+
+    document
+      .getElementById(
+        'resultMode'
+      )
+      .innerText =
+        '';
+
+
+    document
+      .getElementById(
+        'resultTime'
+      )
+      .innerText =
+        '';
+
+
+    document
+      .getElementById(
+        'resultSub'
+      )
+      .innerText =
+        '';
+  }
+
+
+  setTimeout(
+    hideFullResult,
+    3000
+  );
 }
 
 
-function hideResult() {
+// =====================================
+// 全画面を閉じる
+// =====================================
+
+function hideFullResult() {
+
+  const screen =
+    document.getElementById(
+      'fullResult'
+    );
+
+
+  screen.className =
+    '';
+
+
+  screen.style.display =
+    '';
+
 
   document
-    .getElementById('resultBox')
-    .style.display =
-      'none';
+    .getElementById(
+      'resultIcon'
+    )
+    .innerText =
+      '';
+
+
+  document
+    .getElementById(
+      'resultTitle'
+    )
+    .innerText =
+      '';
+
+
+  document
+    .getElementById(
+      'resultName'
+    )
+    .innerText =
+      '';
+
+
+  document
+    .getElementById(
+      'resultMode'
+    )
+    .innerText =
+      '';
+
+
+  document
+    .getElementById(
+      'resultTime'
+    )
+    .innerText =
+      '';
+
+
+  document
+    .getElementById(
+      'resultSub'
+    )
+    .innerText =
+      '';
 }
 
 
+// =====================================
 // 音
+// =====================================
+
+function successSound() {
+
+  beep(
+    880,
+    0.18
+  );
+}
+
+
+function duplicateSound() {
+
+  beep(
+    330,
+    0.12
+  );
+
+
+  setTimeout(
+    function() {
+
+      beep(
+        260,
+        0.25
+      );
+    },
+    140
+  );
+}
+
+
+function errorSound() {
+
+  beep(
+    220,
+    0.35
+  );
+}
+
+
 function beep(
   frequency,
   seconds
@@ -1334,51 +2549,256 @@ function beep(
       window.AudioContext ||
       window.webkitAudioContext;
 
+
     const context =
       new AudioContext();
+
 
     const oscillator =
       context.createOscillator();
 
+
     const gain =
       context.createGain();
 
-    oscillator.connect(gain);
-    gain.connect(context.destination);
+
+    oscillator.connect(
+      gain
+    );
+
+
+    gain.connect(
+      context.destination
+    );
+
 
     oscillator.frequency.value =
       frequency;
 
+
     gain.gain.value =
-      0.15;
+      0.17;
+
 
     oscillator.start();
+
 
     oscillator.stop(
       context.currentTime +
       seconds
     );
 
+
   } catch (e) {}
 }
 
 
+// =====================================
+// JSONP通信
+// =====================================
+
+function jsonpRequest(
+  params,
+  callback
+) {
+
+  const callbackName =
+    'coral_' +
+    Date.now() +
+    '_' +
+    Math.floor(
+      Math.random() *
+      99999
+    );
+
+
+  const script =
+    document.createElement(
+      'script'
+    );
+
+
+  let finished =
+    false;
+
+
+  function cleanup() {
+
+    if (
+      script.parentNode
+    ) {
+
+      script.parentNode
+        .removeChild(
+          script
+        );
+    }
+
+
+    try {
+
+      delete window[
+        callbackName
+      ];
+
+    } catch (e) {}
+  }
+
+
+  window[
+    callbackName
+  ] =
+    function(result) {
+
+      if (
+        finished
+      ) {
+        return;
+      }
+
+
+      finished =
+        true;
+
+
+      callback(
+        result
+      );
+
+
+      cleanup();
+    };
+
+
+  const query =
+    Object.keys(
+      params
+    )
+    .map(
+      function(key) {
+
+        return (
+          encodeURIComponent(
+            key
+          ) +
+          '=' +
+          encodeURIComponent(
+            params[key]
+          )
+        );
+      }
+    )
+    .join(
+      '&'
+    );
+
+
+  script.src =
+    GAS_URL +
+    '?' +
+    query +
+    '&callback=' +
+    encodeURIComponent(
+      callbackName
+    ) +
+    '&t=' +
+    Date.now();
+
+
+  script.onerror =
+    function() {
+
+      if (
+        finished
+      ) {
+        return;
+      }
+
+
+      finished =
+        true;
+
+
+      callback({
+        success:
+          false,
+
+        message:
+          '通信できませんでした。'
+      });
+
+
+      cleanup();
+    };
+
+
+  document.body.appendChild(
+    script
+  );
+
+
+  setTimeout(
+    function() {
+
+      if (
+        finished
+      ) {
+        return;
+      }
+
+
+      finished =
+        true;
+
+
+      callback({
+        success:
+          false,
+
+        message:
+          '通信に時間がかかっています。'
+      });
+
+
+      cleanup();
+
+    },
+    15000
+  );
+}
+
+
+// =====================================
 // カメラ
+// =====================================
+
 function startCamera() {
 
   const scanner =
     new Html5QrcodeScanner(
+
       'reader',
+
       {
-        fps: 10,
-        qrbox: {
-          width: 250,
-          height: 250
-        },
-        rememberLastUsedCamera: true
+        fps:
+          10,
+
+        qrbox:
+          {
+            width:
+              250,
+
+            height:
+              250
+          },
+
+        rememberLastUsedCamera:
+          true
       },
+
       false
     );
+
 
   scanner.render(
     onScanSuccess,
@@ -1387,12 +2807,17 @@ function startCamera() {
 }
 
 
+// =====================================
 // 起動
+// =====================================
+
 window.addEventListener(
   'load',
   function() {
 
-    setMode('arrival');
+    setMode(
+      'arrival'
+    );
 
     startCamera();
   }
